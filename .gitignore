@@ -1,0 +1,9 @@
+node_modules/
+# Large generated/fetched artifacts; rebuild with scripts/ (hashes in web/assets/manifest.json and locks/)
+web/assets/*.wasm
+web/assets/*.tar
+web/vendor/
+web/pyodide/*
+!web/pyodide/.keep
+results/bench/*.log
+__pycache__/

@@ -1,0 +1,10 @@
+PASS cancel during compile | compile failed: cancelled by user
+PASS compile after cancel (restarted compiler worker) | compiled in 142.7 s, 24.9 MB Wasm
+PASS link argv carries memory cap | -Wl,-z,stack-size=8388608 -Wl,--stack-first -Wl,--max-memory=268435456
+PASS run 1: MemoryError caught under cap | memory: MemoryError caught after 224 MiB; recovered: 499999500000
+PASS run 1: stdout bounded to 64 KiB | 65536 bytes
+PASS run 1: endless loop killed by timeout | killed after 30 s timeout after 30108 ms
+PASS run 2: MemoryError caught under cap | memory: MemoryError caught after 224 MiB; recovered: 499999500000
+PASS run 2: stdout bounded to 64 KiB | 65536 bytes
+PASS run 2: endless loop killed by timeout | killed after 30 s timeout after 30096 ms
+PASS UI responsive after kill | run button enabled

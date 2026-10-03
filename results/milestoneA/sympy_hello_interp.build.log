@@ -1,0 +1,15 @@
+Nuitka-Options: Used command line options: sympy_hello.py --standalone --static-libpython=yes --disable-ccache --lto=yes --nofollow-import-to=sympy,mpmath --output-dir=/home/ubuntu/work/milestoneA/sh_interp --output-filename=output.wasm
+Nuitka: Starting Python compilation with Nuitka '2.6.3' on Python '3.11' commercial grade 'not installed'.
+Nuitka: Completed Python level compilation and optimization.
+Nuitka: Generating source code for C backend compiler.
+Nuitka: Running data composer tool for optimal constant value handling.
+Nuitka: Running C compilation via Scons.
+Nuitka-Scons: Backend C compiler: ~/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/wasi-sdk/21/sdk-Linux/bin/clang (clang 17.0.6).
+Nuitka-Scons: Backend linking program with 7 files (no progress information available for this stage).
+wasm-ld: warning: unknown -z value: noexecstack
+Nuitka: Keeping build directory '/home/ubuntu/work/milestoneA/sh_interp/sympy_hello.build'.
+Nuitka: Successfully created '/home/ubuntu/work/milestoneA/sh_interp/sympy_hello.dist/output.wasm'.
+
+real	0m21.317s
+user	0m28.170s
+sys	0m0.987s

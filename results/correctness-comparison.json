@@ -1,0 +1,371 @@
+{
+ "failures": 0,
+ "report": [
+  {
+   "file": "python_basics.py",
+   "sourceSha256": "f15394db017fe98a0b2c1767c3d89001eba690ba7fc64632adc730811e297eeb",
+   "stdoutSha256": "e35247f1b8b2cef72610e5e7efa0935f07cc4da702d702192a05aa3dfb646e42",
+   "wasmSha256": "24e9b354de50e1cb0e31bbb5942de6b569e8cf3a8a366088b46c72f544d58ac2",
+   "checks": [
+    {
+     "name": "pyodide-present",
+     "ok": true
+    },
+    {
+     "name": "stdout == pyodide",
+     "ok": true
+    },
+    {
+     "name": "exit == pyodide",
+     "ok": true
+    },
+    {
+     "name": "trusted: fib100: 354224848179261915075",
+     "ok": true
+    },
+    {
+     "name": "trusted: primes<50: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, ",
+     "ok": true
+    },
+    {
+     "name": "trusted: prime_count_1e5: 9592",
+     "ok": true
+    },
+    {
+     "name": "trusted: counter: 16",
+     "ok": true
+    },
+    {
+     "name": "trusted: vec: Vec(4, 6)",
+     "ok": true
+    },
+    {
+     "name": "trusted: fraction: 1/2",
+     "ok": true
+    },
+    {
+     "name": "trusted: partitions100: 190569292",
+     "ok": true
+    },
+    {
+     "name": "trusted: factorial50: 30414093201713378043612608166064768844377641568",
+     "ok": true
+    },
+    {
+     "name": "trusted: negfloor: -4 1 2 4",
+     "ok": true
+    },
+    {
+     "name": "trusted: risky: 4",
+     "ok": true
+    },
+    {
+     "name": "trusted: caught: AppError negative: -3",
+     "ok": true
+    },
+    {
+     "name": "trusted: chained: ValueError('wrapped') ZeroDivisionError",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "file": "sympy_algebra.py",
+   "sourceSha256": "27576aa29870060986942a4b2ce4d1e8dda1a765a85475969e680c2da16efffd",
+   "stdoutSha256": "83b199499a02f26f1e7a3c14824dec0d2ff68c4e328701590e716b40f524447a",
+   "wasmSha256": "b3996d7f989314b3644774339026e3cef12cf2753c61de80897ac156c89839f0",
+   "checks": [
+    {
+     "name": "pyodide-present",
+     "ok": true
+    },
+    {
+     "name": "stdout == pyodide",
+     "ok": true
+    },
+    {
+     "name": "exit == pyodide",
+     "ok": true
+    },
+    {
+     "name": "trusted: expand_cube: x**3 + 3*x**2*y + 3*x*y**2 + y**3",
+     "ok": true
+    },
+    {
+     "name": "trusted: factor_diff4: (x - y)*(x + y)*(x**2 + y**2)",
+     "ok": true
+    },
+    {
+     "name": "trusted: factor_poly: (x - 3)*(x - 2)*(x - 1)",
+     "ok": true
+    },
+    {
+     "name": "trusted: factor_gauss: (x - I)*(x + I)",
+     "ok": true
+    },
+    {
+     "name": "trusted: simplify_trig: 1",
+     "ok": true
+    },
+    {
+     "name": "trusted: simplify_rat: x + 1",
+     "ok": true
+    },
+    {
+     "name": "trusted: simplify_exp: E",
+     "ok": true
+    },
+    {
+     "name": "trusted: trigsimp: sin(2*x)",
+     "ok": true
+    },
+    {
+     "name": "trusted: rational: 3/14",
+     "ok": true
+    },
+    {
+     "name": "trusted: gcd: x - 1",
+     "ok": true
+    },
+    {
+     "name": "trusted: pi_digits: 3.141592653589793238462643383279502884197",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "file": "sympy_calculus.py",
+   "sourceSha256": "a6f36de4a2ffc44a6124691f325890063597207ef5e8540c1c3055836b4b5b86",
+   "stdoutSha256": "72eeab2f0d9a225923fa15129e57c8a9f385f5b6f7f00229ea30fd22963843b1",
+   "wasmSha256": "f17f8456e7e4cc26298e3730404f39a535fafcc20c83619f1a38a46c29b6527a",
+   "checks": [
+    {
+     "name": "pyodide-present",
+     "ok": true
+    },
+    {
+     "name": "stdout == pyodide",
+     "ok": true
+    },
+    {
+     "name": "exit == pyodide",
+     "ok": true
+    },
+    {
+     "name": "trusted: diff_prod: x**3*cos(x) + 3*x**2*sin(x)",
+     "ok": true
+    },
+    {
+     "name": "trusted: diff_partial: 6*x*y**2",
+     "ok": true
+    },
+    {
+     "name": "trusted: int_poly: x**3 + x**2",
+     "ok": true
+    },
+    {
+     "name": "trusted: int_def: 1",
+     "ok": true
+    },
+    {
+     "name": "trusted: int_gauss: sqrt(pi)",
+     "ok": true
+    },
+    {
+     "name": "trusted: limit_sinc: 1",
+     "ok": true
+    },
+    {
+     "name": "trusted: limit_e: E",
+     "ok": true
+    },
+    {
+     "name": "trusted: solve_quad: [1, 2]",
+     "ok": true
+    },
+    {
+     "name": "trusted: solve_sys: [{x: 2, y: 1}]",
+     "ok": true
+    },
+    {
+     "name": "trusted: solveset_real: EmptySet",
+     "ok": true
+    },
+    {
+     "name": "trusted: solveset_cplx: {-I, I}",
+     "ok": true
+    },
+    {
+     "name": "trusted: linsolve: {(1, 2)}",
+     "ok": true
+    },
+    {
+     "name": "trusted: roots: {1: 3}",
+     "ok": true
+    },
+    {
+     "name": "trusted: sum_squares: 338350",
+     "ok": true
+    },
+    {
+     "name": "trusted: sum_basel: pi**2/6",
+     "ok": true
+    },
+    {
+     "name": "trusted: sum_exp: E",
+     "ok": true
+    },
+    {
+     "name": "trusted: rational_int: pi/4",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "file": "sympy_matrix_assume.py",
+   "sourceSha256": "4c4e31a73eb619966a6d325d5db2d85ee3ac26b5d1610afd49d8e7ec86b8a744",
+   "stdoutSha256": "89c23028e26619920e81a8f7eac7c7465458a0e74114ef0f345db41b68e4aeea",
+   "wasmSha256": "4c6813284cba06b3d13b5fd111c91eb6930a3650d4d13d40cb30cbefab7f44aa",
+   "checks": [
+    {
+     "name": "pyodide-present",
+     "ok": true
+    },
+    {
+     "name": "stdout == pyodide",
+     "ok": true
+    },
+    {
+     "name": "exit == pyodide",
+     "ok": true
+    },
+    {
+     "name": "trusted: det: -3",
+     "ok": true
+    },
+    {
+     "name": "trusted: inv: Matrix([[-2/3, -4/3, 1], [-2/3, 11/3, -2], [1, -2, 1]])",
+     "ok": true
+    },
+    {
+     "name": "trusted: charpoly: x**2 - 5*x + 5",
+     "ok": true
+    },
+    {
+     "name": "trusted: matpow: 832040",
+     "ok": true
+    },
+    {
+     "name": "trusted: symbolic_det: (x - y)*(x + y)",
+     "ok": true
+    },
+    {
+     "name": "trusted: solve_lin: Matrix([[-1/3, 2/3, 0]])",
+     "ok": true
+    },
+    {
+     "name": "trusted: eye_trace: 12",
+     "ok": true
+    },
+    {
+     "name": "trusted: sqrt_pos: p sqrt_gen: sqrt(x**2)",
+     "ok": true
+    },
+    {
+     "name": "trusted: refine: -x",
+     "ok": true
+    },
+    {
+     "name": "trusted: dom_interval: Interval.open(-2, 2)",
+     "ok": true
+    },
+    {
+     "name": "trusted: dom_ints: EmptySet",
+     "ok": true
+    },
+    {
+     "name": "trusted: factor_mod: (x + 1)**4",
+     "ok": true
+    },
+    {
+     "name": "trusted: gf: 1 mod 7",
+     "ok": true
+    },
+    {
+     "name": "trusted: mp_pi: 3.1415926535897932384626433832795028841971693993751",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "file": "errors.py",
+   "sourceSha256": "94d698131a2a5aa7a0febcc1c825108a0102181739bbb308c9b6e96986af3c6b",
+   "stdoutSha256": "e43230b12c1bacbea81f35d161c414fdb5b5b94e551f749a947f260576a867dd",
+   "wasmSha256": "058e0319a3623f5abddbac0e0cbc006d76bd68626d6745a23a721adbcda0cd96",
+   "checks": [
+    {
+     "name": "pyodide-present",
+     "ok": true
+    },
+    {
+     "name": "stdout == pyodide",
+     "ok": true
+    },
+    {
+     "name": "exit == pyodide",
+     "ok": true
+    },
+    {
+     "name": "last stderr line == pyodide",
+     "ok": true
+    },
+    {
+     "name": "trusted: div_zero_sympy: ok: zoo",
+     "ok": true
+    },
+    {
+     "name": "trusted: div_zero_int: error: ZeroDivisionError integer division or m",
+     "ok": true
+    },
+    {
+     "name": "trusted: singular_inv: error: NonInvertibleMatrixError Matrix det == ",
+     "ok": true
+    },
+    {
+     "name": "trusted: index_error: error: IndexError list index out of range",
+     "ok": true
+    },
+    {
+     "name": "trusted: after_errors: 2*sqrt(2)",
+     "ok": true
+    },
+    {
+     "name": "trusted uncaught exception",
+     "ok": true
+    }
+   ]
+  },
+  {
+   "file": "recursion_limit.py",
+   "knownDivergence": "Nuitka-compiled function calls do not enforce sys.getrecursionlimit(); upstream native Nuitka 2.6.3 segfaults (exit 139) on the same program (results/native-nuitka-recursion/README.log). In the browser the V8 native stack overflows first and the run worker reports a trap instead of RecursionError.",
+   "sourceSha256": "16b5086c49537a677a3692ae8f6b07f72fc1578c9fe7c9837621a69904d23b47",
+   "stdoutSha256": "10ce3a08a22be78ee91a66ceb7730a5a8aa7c09163cdee0ea4675a236d00385f",
+   "trap": "RangeError: Maximum call stack size exceeded (native stack exhausted: Nuitka-compiled Python calls are not bounded by sys.getrecursionlimit(); native Nuitka 2.6.3 segfaults on the same program, see results/native-nuitka-recursion)",
+   "wasmSha256": "6628c36fa4225ab2ec2a9fca9e3d212e3c798bbe9174c58225ff20b9d11bc756",
+   "checks": [
+    {
+     "name": "pyodide-present",
+     "ok": true
+    },
+    {
+     "name": "known divergence: pyodide",
+     "ok": true
+    },
+    {
+     "name": "known divergence: lab trap",
+     "ok": true
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="favicon.svg">
+<title>MathCompile Wasm lab: Python/SymPy -> Nuitka -> C -> clang -> Wasm, in the browser</title>
+<style>
+body { font: 14px system-ui, sans-serif; margin: 1rem; max-width: 1200px; }
+textarea { width: 100%; height: 260px; font: 13px ui-monospace, monospace; }
+pre { background: #f4f4f4; padding: .5rem; max-height: 260px; overflow: auto; white-space: pre-wrap; font: 12px ui-monospace, monospace; }
+.row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; margin: .5rem 0; }
+#stages li.active { font-weight: bold; } .err { color: #b00020; } .ok { color: #106010; }
+table { border-collapse: collapse; } td, th { border: 1px solid #ccc; padding: 2px 6px; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>MathCompile Wasm lab</h1>
+<p>Fresh Python is compiled by the real Nuitka 2.6.3 frontend running in CPython 3.11.8 (WASI) inside a worker,
+the generated C is compiled and linked by YoWASP clang/lld 21 inside the same worker, and the new Wasm runs in a
+separate worker. No server compiles anything; after setup, workers have no network.</p>
+<div class="row">
+  <button id="prefetch">1. Load toolchain</button>
+  <span id="assetStatus">not loaded</span>
+</div>
+<textarea id="src" spellcheck="false"></textarea>
+<div class="row">
+  <label><input type="checkbox" id="interp" checked> SymPy/mpmath interpreted by the embedded CPython (user code compiled)</label>
+  <label>run timeout s <input id="timeout" type="number" value="120" style="width:5em"></label>
+  <label>compile timeout s <input id="ctimeout" type="number" value="900" style="width:5em"></label>
+  <label>max output KiB <input id="maxout" type="number" value="1024" style="width:6em"></label>
+  <label>max Wasm memory MiB <input id="maxmem" type="number" value="2048" min="64" max="4096" style="width:6em"></label>
+  <label>repeat <input id="repeat" type="number" value="1" min="1" style="width:4em"></label>
+</div>
+<div class="row">
+  <button id="compile" disabled>2. Compile</button>
+  <button id="run" disabled>3. Run</button>
+  <button id="cancel" disabled>Cancel</button>
+  <a id="download" download="main.wasm" hidden>Download generated Wasm</a>
+  <span id="status"></span>
+</div>
+<ol id="stages"></ol>
+<h3>stdout</h3><pre id="stdout"></pre>
+<h3>stderr / diagnostics</h3><pre id="stderr"></pre>
+<details><summary>Frontend / compiler log</summary><pre id="log"></pre></details>
+<details><summary>Generated C (module.__main__.c)</summary><pre id="csrc"></pre></details>
+<details><summary>Evidence (hashes, build plan, worker network log)</summary><pre id="evidence"></pre></details>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+ "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/137.0.0.0 Safari/537.36",
+ "runtime": "pyodide-0.25.1",
+ "results": [
+  {
+   "file": "selfc-unseen-source.py",
+   "type": "done",
+   "setup": {
+    "coreMs": 916.75,
+    "packagesMs": 306.4350000023842,
+    "version": "0.25.1"
+   },
+   "runs": [
+    {
+     "ms": 2335.954999998212,
+     "code": 0,
+     "stdout": "caught KeyError('k261412584')\nnonce 261412584 seq = 7 pow = 609013828\nx*(x - 7)*(x + 26)\n[13 - 9*sqrt(2), 9*sqrt(2) + 13]\n0 2 True\n282475249/18\n2*x**7*(x**2*cos(2*x) + 9*x*sin(2*x) + 36*sin(x)**2)\n",
+     "stderr": ""
+    }
+   ],
+   "wallMs": 3566.589999999851
+  },
+  {
+   "file": "python_basics.py",
+   "type": "done",
+   "setup": {
+    "coreMs": 910.304999999702,
+    "packagesMs": 296.7549999989569,
+    "version": "0.25.1"
+   },
+   "runs": [
+    {
+     "ms": 53.105000000447035,
+     "code": 0,
+     "stdout": "fib100: 354224848179261915075\nprimes<50: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]\nprime_count_1e5: 9592\ncounter: 16\nvec: Vec(4, 6)\ngen: 111277611\ncomb: [('a', 'b'), ('a', 'c'), ('a', 'd')]\ncounter_mc: [('i', 4), ('s', 4)]\njson: {\"a\": true, \"b\": [1, 2.5, null]}\nfraction: 1/2\npartitions100: 190569292\nfactorial50: 30414093201713378043612608166064768844377641568960512000000000000\nbigpow: 6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151\nbigdivmod: (810000007290000124740001, 8084321211185440)\nmodpow: 259616729\nnegfloor: -4 1 2 4\nrisky: 4\nfinally: 16\ncaught: AppError negative: -3\nfinally: -3\nchained: ValueError('wrapped') ZeroDivisionError\nint_error: invalid literal for int() with base 10: '12x'\n",
+     "stderr": ""
+    }
+   ],
+   "wallMs": 1271.3800000026822
+  }
+ ]
+}

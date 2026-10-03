@@ -1,0 +1,11 @@
+$ pip install nuitka==2.6.3 (CPython 3.11.15, x86_64 Linux, gcc 11.4)
+$ python -m nuitka --no-progressbar --remove-output rec.py
+Nuitka-Scons:WARNING: You are not using ccache, re-compilation of identical code will be slower than necessary. Use your OS package manager to install it.
+Nuitka: Removing build directory 'rec.build'.
+Nuitka: Successfully created 'rec.bin'.
+$ ./rec.bin; echo exit=$?
+Segmentation fault (core dumped)
+exit=139
+$ python rec.py   # CPython, interpreted
+plain RecursionError maximum recursion depth exceeded
+selfapply RecursionError maximum recursion depth exceeded

@@ -1,0 +1,27 @@
+{
+ "ok": true,
+ "labExit0": true,
+ "stdoutIdenticalToPyodide": true,
+ "noServerRequestsAfterOffline": true,
+ "sourceHash": "e950f16ea3c232107de8a0bc4f37cb4605bdb09cb859aa3f77d5a62d4d8b3508",
+ "wasmHash": "cc8c43d5df0542a3c529c7af5405b55381be178727232ab41560f3855c5908f0",
+ "stages": [
+  [
+   "vfs-setup",
+   124
+  ],
+  [
+   "python-to-c",
+   125172
+  ],
+  [
+   "c-compile",
+   29946
+  ],
+  [
+   "link",
+   37847
+  ]
+ ],
+ "workerRefusedFetches": 0
+}

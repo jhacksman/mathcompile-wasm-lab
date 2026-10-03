@@ -1,0 +1,80 @@
+{
+ "_comment": "Hand-checked mathematical facts (independent of SymPy/Pyodide). Compared as exact output lines.",
+ "python_basics.py": [
+  "fib100: 354224848179261915075",
+  "primes<50: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]",
+  "prime_count_1e5: 9592",
+  "counter: 16",
+  "vec: Vec(4, 6)",
+  "fraction: 1/2",
+  "partitions100: 190569292",
+  "factorial50: 30414093201713378043612608166064768844377641568960512000000000000",
+  "negfloor: -4 1 2 4",
+  "risky: 4",
+  "caught: AppError negative: -3",
+  "chained: ValueError('wrapped') ZeroDivisionError"
+ ],
+ "sympy_algebra.py": [
+  "expand_cube: x**3 + 3*x**2*y + 3*x*y**2 + y**3",
+  "factor_diff4: (x - y)*(x + y)*(x**2 + y**2)",
+  "factor_poly: (x - 3)*(x - 2)*(x - 1)",
+  "factor_gauss: (x - I)*(x + I)",
+  "simplify_trig: 1",
+  "simplify_rat: x + 1",
+  "simplify_exp: E",
+  "trigsimp: sin(2*x)",
+  "rational: 3/14",
+  "gcd: x - 1",
+  "pi_digits: 3.141592653589793238462643383279502884197"
+ ],
+ "sympy_calculus.py": [
+  "diff_prod: x**3*cos(x) + 3*x**2*sin(x)",
+  "diff_partial: 6*x*y**2",
+  "int_poly: x**3 + x**2",
+  "int_def: 1",
+  "int_gauss: sqrt(pi)",
+  "limit_sinc: 1",
+  "limit_e: E",
+  "solve_quad: [1, 2]",
+  "solve_sys: [{x: 2, y: 1}]",
+  "solveset_real: EmptySet",
+  "solveset_cplx: {-I, I}",
+  "linsolve: {(1, 2)}",
+  "roots: {1: 3}",
+  "sum_squares: 338350",
+  "sum_basel: pi**2/6",
+  "sum_exp: E",
+  "rational_int: pi/4"
+ ],
+ "sympy_matrix_assume.py": [
+  "det: -3",
+  "inv: Matrix([[-2/3, -4/3, 1], [-2/3, 11/3, -2], [1, -2, 1]])",
+  "charpoly: x**2 - 5*x + 5",
+  "matpow: 832040",
+  "symbolic_det: (x - y)*(x + y)",
+  "solve_lin: Matrix([[-1/3, 2/3, 0]])",
+  "eye_trace: 12",
+  "sqrt_pos: p sqrt_gen: sqrt(x**2)",
+  "refine: -x",
+  "dom_interval: Interval.open(-2, 2)",
+  "dom_ints: EmptySet",
+  "factor_mod: (x + 1)**4",
+  "gf: 1 mod 7",
+  "mp_pi: 3.1415926535897932384626433832795028841971693993751"
+ ],
+ "errors.py": [
+  "div_zero_sympy: ok: zoo",
+  "div_zero_int: error: ZeroDivisionError integer division or modulo by zero",
+  "singular_inv: error: NonInvertibleMatrixError Matrix det == 0; not invertible.",
+  "index_error: error: IndexError list index out of range",
+  "after_errors: 2*sqrt(2)"
+ ],
+ "_errors_expected_last_stderr_line": "ValueError: uncaught at end: [-2, 2]",
+ "_known_divergences": {
+  "recursion_limit.py": {
+   "pyodide_expect": "RecursionError maximum recursion depth exceeded",
+   "lab_expect_trap": "Maximum call stack size exceeded",
+   "reason": "Nuitka-compiled function calls do not enforce sys.getrecursionlimit(); upstream native Nuitka 2.6.3 segfaults (exit 139) on the same program (results/native-nuitka-recursion/README.log). In the browser the V8 native stack overflows first and the run worker reports a trap instead of RecursionError."
+  }
+ }
+}

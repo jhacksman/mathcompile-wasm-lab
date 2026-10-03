@@ -1,0 +1,13 @@
+py2wasm: Using wasi-sdk from /home/ubuntu/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/wasi-sdk/21/sdk-Linux
+Nuitka-Options: Used command line options: sympy_hello.py --standalone --static-libpython=yes --disable-ccache --lto=yes --output-dir=/home/ubuntu/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/__py2wasm --output-filename=output.wasm --remove-output
+Nuitka: Starting Python compilation with Nuitka '2.6.3' on Python '3.11' commercial grade 'not installed'.
+Nuitka-Plugins:anti-bloat: Not including '_bisect' automatically in order to avoid bloat, but this may cause: may slow down by using fallback implementation.
+Nuitka: Completed Python level compilation and optimization.
+Nuitka: Generating source code for C backend compiler.
+Nuitka: Running data composer tool for optimal constant value handling.
+Nuitka: Running C compilation via Scons.
+Nuitka-Scons: Backend C compiler: ~/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/wasi-sdk/21/sdk-Linux/bin/clang (clang 17.0.6).
+Nuitka-Scons: Backend linking program with 608 files (no progress information available for this stage).
+wasm-ld: warning: unknown -z value: noexecstack
+Nuitka-Scons: Running ~/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/wasi-sdk/21/sdk-Linux/bin/clang -o ~/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/__py2wasm/sympy_hello.dist/output.wasm -flto --target=wasm32-wasi -lwasi-emulated-mman -lwasi-emulated-getpid -lwasi-emulated-signal -lwasi-emulated-process-clocks -ldl -lmpdec -lexpat -O2 -z noexecstack -Wl,--export-dynamic @"./@link_input.txt -L/home/ubuntu/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/wasi-python/lib -ldl -lm ~/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/wasi-python/lib/libpython3.11.a -ldl -lpthread -lutil -lrt -lm took 1723.44 seconds
+scons: *** [/home/ubuntu/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/__py2wasm/sympy_hello.dist/output.wasm] Build interrupted.
