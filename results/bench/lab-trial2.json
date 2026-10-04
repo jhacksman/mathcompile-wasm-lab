@@ -1,0 +1,1446 @@
+{
+ "url": "http://localhost:8645/",
+ "offline": false,
+ "offlineAt": null,
+ "fullCompile": false,
+ "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/137.0.0.0 Safari/537.36",
+ "assetStatus": "8/8 files, 289.2 MB — ready in 1.2 s",
+ "serverRequests": [
+  {
+   "t": 1790992029155,
+   "method": "GET",
+   "path": "/"
+  },
+  {
+   "t": 1790992029162,
+   "method": "GET",
+   "path": "/app.mjs"
+  },
+  {
+   "t": 1790992029174,
+   "method": "GET",
+   "path": "/sw.js"
+  },
+  {
+   "t": 1790992029182,
+   "method": "GET",
+   "path": "/favicon.svg"
+  },
+  {
+   "t": 1790992029185,
+   "method": "GET",
+   "path": "/"
+  },
+  {
+   "t": 1790992029186,
+   "method": "GET",
+   "path": "/index.html"
+  },
+  {
+   "t": 1790992029186,
+   "method": "GET",
+   "path": "/app.mjs"
+  },
+  {
+   "t": 1790992029186,
+   "method": "GET",
+   "path": "/compiler-worker.mjs"
+  },
+  {
+   "t": 1790992029187,
+   "method": "GET",
+   "path": "/run-worker.mjs"
+  },
+  {
+   "t": 1790992029188,
+   "method": "GET",
+   "path": "/worker-net.mjs"
+  },
+  {
+   "t": 1790992029188,
+   "method": "GET",
+   "path": "/lib/tar.mjs"
+  },
+  {
+   "t": 1790992029189,
+   "method": "GET",
+   "path": "/lib/vfs.mjs"
+  },
+  {
+   "t": 1790992029190,
+   "method": "GET",
+   "path": "/lib/wasi-run.mjs"
+  },
+  {
+   "t": 1790992029190,
+   "method": "GET",
+   "path": "/lib/frontend.mjs"
+  },
+  {
+   "t": 1790992029190,
+   "method": "GET",
+   "path": "/lib/clang-bridge.mjs"
+  },
+  {
+   "t": 1790992029194,
+   "method": "GET",
+   "path": "/lib/plan-exec.mjs"
+  },
+  {
+   "t": 1790992029194,
+   "method": "GET",
+   "path": "/vendor/yowasp-clang/bundle.js"
+  },
+  {
+   "t": 1790992029194,
+   "method": "GET",
+   "path": "/vendor/browser_wasi_shim/index.js"
+  },
+  {
+   "t": 1790992029197,
+   "method": "GET",
+   "path": "/vendor/browser_wasi_shim/wasi.js"
+  },
+  {
+   "t": 1790992029197,
+   "method": "GET",
+   "path": "/vendor/browser_wasi_shim/wasi_defs.js"
+  },
+  {
+   "t": 1790992029198,
+   "method": "GET",
+   "path": "/vendor/browser_wasi_shim/fd.js"
+  },
+  {
+   "t": 1790992029199,
+   "method": "GET",
+   "path": "/vendor/browser_wasi_shim/fs_mem.js"
+  },
+  {
+   "t": 1790992029199,
+   "method": "GET",
+   "path": "/vendor/browser_wasi_shim/fs_opfs.js"
+  },
+  {
+   "t": 1790992029200,
+   "method": "GET",
+   "path": "/vendor/browser_wasi_shim/strace.js"
+  },
+  {
+   "t": 1790992029200,
+   "method": "GET",
+   "path": "/vendor/browser_wasi_shim/debug.js"
+  },
+  {
+   "t": 1790992029212,
+   "method": "GET",
+   "path": "/"
+  },
+  {
+   "t": 1790992029216,
+   "method": "GET",
+   "path": "/app.mjs"
+  },
+  {
+   "t": 1790992029228,
+   "method": "GET",
+   "path": "/favicon.svg"
+  },
+  {
+   "t": 1790992029275,
+   "method": "GET",
+   "path": "/assets/python.wasm"
+  },
+  {
+   "t": 1790992029276,
+   "method": "GET",
+   "path": "/assets/frontend.tar"
+  },
+  {
+   "t": 1790992029276,
+   "method": "GET",
+   "path": "/assets/runtime.tar"
+  },
+  {
+   "t": 1790992029276,
+   "method": "GET",
+   "path": "/vendor/yowasp-clang/llvm.core.wasm"
+  },
+  {
+   "t": 1790992029276,
+   "method": "GET",
+   "path": "/vendor/yowasp-clang/llvm.core2.wasm"
+  },
+  {
+   "t": 1790992029276,
+   "method": "GET",
+   "path": "/vendor/yowasp-clang/llvm.core3.wasm"
+  },
+  {
+   "t": 1790992029280,
+   "method": "GET",
+   "path": "/vendor/yowasp-clang/llvm.core4.wasm"
+  },
+  {
+   "t": 1790992029280,
+   "method": "GET",
+   "path": "/vendor/yowasp-clang/llvm-resources.tar"
+  },
+  {
+   "t": 1790992029784,
+   "method": "GET",
+   "path": "/compiler-worker.mjs"
+  },
+  {
+   "t": 1790992029955,
+   "method": "GET",
+   "path": "/worker-net.mjs"
+  },
+  {
+   "t": 1790992030067,
+   "method": "GET",
+   "path": "/lib/tar.mjs"
+  },
+  {
+   "t": 1790992030068,
+   "method": "GET",
+   "path": "/lib/vfs.mjs"
+  },
+  {
+   "t": 1790992030068,
+   "method": "GET",
+   "path": "/lib/frontend.mjs"
+  },
+  {
+   "t": 1790992030068,
+   "method": "GET",
+   "path": "/lib/clang-bridge.mjs"
+  },
+  {
+   "t": 1790992030072,
+   "method": "GET",
+   "path": "/lib/wasi-run.mjs"
+  },
+  {
+   "t": 1790992030072,
+   "method": "GET",
+   "path": "/lib/plan-exec.mjs"
+  },
+  {
+   "t": 1790992032148,
+   "method": "GET",
+   "path": "/sw.js"
+  },
+  {
+   "t": 1790992251665,
+   "method": "GET",
+   "path": "/run-worker.mjs"
+  },
+  {
+   "t": 1790992251727,
+   "method": "GET",
+   "path": "/worker-net.mjs"
+  },
+  {
+   "t": 1790992251727,
+   "method": "GET",
+   "path": "/lib/tar.mjs"
+  },
+  {
+   "t": 1790992251728,
+   "method": "GET",
+   "path": "/lib/vfs.mjs"
+  },
+  {
+   "t": 1790992251728,
+   "method": "GET",
+   "path": "/lib/wasi-run.mjs"
+  },
+  {
+   "t": 1790992252790,
+   "method": "GET",
+   "path": "/sw.js"
+  },
+  {
+   "t": 1790992487872,
+   "method": "GET",
+   "path": "/run-worker.mjs"
+  },
+  {
+   "t": 1790992487930,
+   "method": "GET",
+   "path": "/worker-net.mjs"
+  },
+  {
+   "t": 1790992487931,
+   "method": "GET",
+   "path": "/lib/tar.mjs"
+  },
+  {
+   "t": 1790992487931,
+   "method": "GET",
+   "path": "/lib/vfs.mjs"
+  },
+  {
+   "t": 1790992487931,
+   "method": "GET",
+   "path": "/lib/wasi-run.mjs"
+  },
+  {
+   "t": 1790992488988,
+   "method": "GET",
+   "path": "/sw.js"
+  }
+ ],
+ "serverRequestsAfterOffline": null,
+ "cdpRequests": [
+  {
+   "t": 1790992029155,
+   "phase": "page",
+   "url": "http://localhost:8645/?t=1790992029151",
+   "type": "Document"
+  },
+  {
+   "t": 1790992029167,
+   "phase": "page",
+   "url": "http://localhost:8645/app.mjs",
+   "type": "Script"
+  },
+  {
+   "t": 1790992029182,
+   "phase": "page",
+   "url": "http://localhost:8645/favicon.svg",
+   "type": "Other"
+  },
+  {
+   "t": 1790992029212,
+   "phase": "page",
+   "url": "http://localhost:8645/?t=1790992029151",
+   "type": "Document"
+  },
+  {
+   "t": 1790992029223,
+   "phase": "page",
+   "url": "http://localhost:8645/app.mjs",
+   "type": "Script"
+  },
+  {
+   "t": 1790992029232,
+   "phase": "page",
+   "url": "http://localhost:8645/favicon.svg",
+   "type": "Other"
+  },
+  {
+   "t": 1790992029276,
+   "phase": "page",
+   "url": "http://localhost:8645/assets/python.wasm",
+   "type": "Fetch"
+  },
+  {
+   "t": 1790992029276,
+   "phase": "page",
+   "url": "http://localhost:8645/assets/frontend.tar",
+   "type": "Fetch"
+  },
+  {
+   "t": 1790992029276,
+   "phase": "page",
+   "url": "http://localhost:8645/assets/runtime.tar",
+   "type": "Fetch"
+  },
+  {
+   "t": 1790992029276,
+   "phase": "page",
+   "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core.wasm",
+   "type": "Fetch"
+  },
+  {
+   "t": 1790992029276,
+   "phase": "page",
+   "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core2.wasm",
+   "type": "Fetch"
+  },
+  {
+   "t": 1790992029276,
+   "phase": "page",
+   "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core3.wasm",
+   "type": "Fetch"
+  },
+  {
+   "t": 1790992029276,
+   "phase": "page",
+   "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core4.wasm",
+   "type": "Fetch"
+  },
+  {
+   "t": 1790992029276,
+   "phase": "page",
+   "url": "http://localhost:8645/vendor/yowasp-clang/llvm-resources.tar",
+   "type": "Fetch"
+  },
+  {
+   "t": 1790992029783,
+   "phase": "page",
+   "url": "http://localhost:8645/compiler-worker.mjs",
+   "type": "Script"
+  },
+  {
+   "t": 1790992251664,
+   "phase": "page",
+   "url": "http://localhost:8645/run-worker.mjs",
+   "type": "Script"
+  },
+  {
+   "t": 1790992487870,
+   "phase": "page",
+   "url": "http://localhost:8645/run-worker.mjs",
+   "type": "Script"
+  }
+ ],
+ "cdpRequestsAfterOffline": [
+  {
+   "t": 1790992251664,
+   "phase": "page",
+   "url": "http://localhost:8645/run-worker.mjs",
+   "type": "Script"
+  },
+  {
+   "t": 1790992487870,
+   "phase": "page",
+   "url": "http://localhost:8645/run-worker.mjs",
+   "type": "Script"
+  }
+ ],
+ "programs": [
+  {
+   "file": "bench_python.py",
+   "sourceSha256": "0ca1053965f931a544f1cf5c67bdbb7dfef80f4b84c51ed8d1f5d8ef27402230",
+   "status": "exit 0; first run 1.00 s; repeats 0.80, 0.82 s",
+   "exit": 0,
+   "trap": null,
+   "stdout": "{\"bench\": \"python\", \"result\": [2864133, 393133, 988094463], \"import_ms\": 0.030000000000002247, \"work_ms\": [252.06, 159.20999999999995, 151.22999999999996, 182.18500000000003, 152.83500000000006]}\n",
+   "stdoutSha256": "2857696ceec88f8b7e388aa41228dcbff7750394edd946953782c39aa475f392",
+   "stderr": "",
+   "evidence": {
+    "assetDownloadMs": 507.75,
+    "assetBytes": 289157312,
+    "compilerInitMs": 698.179999999702,
+    "compile": {
+     "sourceHash": "0ca1053965f931a544f1cf5c67bdbb7dfef80f4b84c51ed8d1f5d8ef27402230",
+     "wasmHash": "21288624c883c40ba6ecf2829678518fd5d5ab2338d6abaa9419732ae001cc2b",
+     "wasmBytes": 26387045,
+     "cHashes": {
+      "module.__main__.const": "0495b28df2a3090be4bc423b7c74081c999e138da4c391af5db23ac7b1474894",
+      "module.__main__.c": "85c0c7ea89a956b55b657e560d5aabcd97b7e19cb30fc8317c2817b154bb533a",
+      "__constants.const": "a1116074a622187dadd4f006b609574d039311734bd65be96b8bd855d1f3d159",
+      "__helpers.h": "4f4ec03f35a0017d3e6d63226414333ea003b2a2e01af6439ef0232d01e30107",
+      "__helpers.c": "b4dbfc627b20fb92231456a7edb1a3a689ede4ddcb1b01b879911ab239a2fd3a",
+      "__constants.h": "252c58d4595d2bb483c08fb5515919a5611b58fac653f50100826ce68aa15200",
+      "__constants.c": "febb12cfc6d9282774e73035e23acea90ddd32a56878a01dc037802733647b3f",
+      "__bytecode.const": "70ce719bba91b19f5db91e0545873deb421051b51f82c611b6ebbc4ff71595e9",
+      "__loader.c": "6d0ab44d3b5006bb3425475c472d8fa12e62de0e939caab1637c2ebbc0831ce5",
+      "__constants_data.c": "1cd9f0dd3e16999b741dd44c468869792fe7328202c150769721e9110b424090",
+      "static_src/MainProgram.c": "403b5c1d0c29f378ebc3a7acd573234a5ca6235d45ddb8573d38f3d3e3b206eb",
+      "static_src/CompiledFunctionType.c": "cf893f7c4d5f79f17df685485d69ecb3c2a13b3dbd68615175e159c1a974935e",
+      "build_definitions.h": "4c417a0a6e2a6f7473ebbc23ec3770b0e59b01d4d7c5df2e132ca65b271f1b1f"
+     },
+     "plan": [
+      {
+       "cwd": "/work/job1790992030556/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "__constants.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "__constants.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992030556/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "__constants_data.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "__constants_data.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992030556/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "__helpers.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "__helpers.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992030556/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "__loader.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "__loader.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992030556/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "module.__main__.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "module.__main__.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992030556/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "static_src/MainProgram.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "static_src/MainProgram.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992030556/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "static_src/CompiledFunctionType.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "static_src/CompiledFunctionType.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992030556/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "/work/job1790992030556/out/main.dist/main.bin",
+        "-flto",
+        "--target=wasm32-wasip1",
+        "-lwasi-emulated-mman",
+        "-lwasi-emulated-getpid",
+        "-lwasi-emulated-signal",
+        "-lwasi-emulated-process-clocks",
+        "-ldl",
+        "-lmpdec",
+        "-lexpat",
+        "-lz",
+        "-O2",
+        "-z",
+        "noexecstack",
+        "@./@link_input.txt",
+        "-L/target/lib",
+        "-lm",
+        "/target/lib/libpython3.11.a"
+       ]
+      }
+     ],
+     "linkArgv": [
+      "/toolchain/bin/clang",
+      "-o",
+      "/work/job1790992030556/out/main.dist/main.bin",
+      "-flto",
+      "--target=wasm32-wasip1",
+      "-lwasi-emulated-mman",
+      "-lwasi-emulated-getpid",
+      "-lwasi-emulated-signal",
+      "-lwasi-emulated-process-clocks",
+      "-ldl",
+      "-lmpdec",
+      "-lexpat",
+      "-lz",
+      "-O2",
+      "-z",
+      "noexecstack",
+      "@./@link_input.txt",
+      "-L/target/lib",
+      "-lm",
+      "/target/lib/libpython3.11.a",
+      "-Wl,-z,stack-size=8388608",
+      "-Wl,--stack-first",
+      "-Wl,--max-memory=2147483648"
+     ],
+     "stages": [
+      {
+       "name": "vfs-setup",
+       "ms": 128.42999999970198
+      },
+      {
+       "name": "python-to-c",
+       "ms": 152535.9849999994,
+       "frontendRuns": [
+        {
+         "attempt": 0,
+         "ms": 1058.679999999702,
+         "code": 1
+        },
+        {
+         "attempt": 1,
+         "ms": 818.054999999702,
+         "code": 1
+        },
+        {
+         "attempt": 2,
+         "ms": 150201.93500000052,
+         "code": 0
+        }
+       ],
+       "cFiles": 13,
+       "planSteps": 8
+      },
+      {
+       "name": "c-compile",
+       "ms": 26342.08999999985,
+       "objects": 7
+      },
+      {
+       "name": "link",
+       "ms": 41722.5549999997
+      }
+     ],
+     "workerNet": [
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core.wasm",
+       "served": "memory",
+       "bytes": 72690007
+      },
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm-resources.tar",
+       "served": "memory",
+       "bytes": 29603840
+      },
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core2.wasm",
+       "served": "memory",
+       "bytes": 37626
+      },
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core3.wasm",
+       "served": "memory",
+       "bytes": 5458
+      },
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core4.wasm",
+       "served": "memory",
+       "bytes": 787
+      }
+     ],
+     "totalMs": 220805.91000000015,
+     "interpretedPackages": [
+      "sympy",
+      "mpmath"
+     ]
+    },
+    "run": {
+     "type": "done",
+     "wasmCompileMs": 15.550000000745058,
+     "runtimeFsMs": 80.32000000029802,
+     "imports": [
+      "wasi_snapshot_preview1.args_get",
+      "wasi_snapshot_preview1.args_sizes_get",
+      "wasi_snapshot_preview1.environ_get",
+      "wasi_snapshot_preview1.environ_sizes_get",
+      "wasi_snapshot_preview1.clock_res_get",
+      "wasi_snapshot_preview1.clock_time_get",
+      "wasi_snapshot_preview1.fd_advise",
+      "wasi_snapshot_preview1.fd_close",
+      "wasi_snapshot_preview1.fd_datasync",
+      "wasi_snapshot_preview1.fd_fdstat_get",
+      "wasi_snapshot_preview1.fd_fdstat_set_flags",
+      "wasi_snapshot_preview1.fd_filestat_get",
+      "wasi_snapshot_preview1.fd_filestat_set_size",
+      "wasi_snapshot_preview1.fd_filestat_set_times",
+      "wasi_snapshot_preview1.fd_pread",
+      "wasi_snapshot_preview1.fd_prestat_get",
+      "wasi_snapshot_preview1.fd_prestat_dir_name",
+      "wasi_snapshot_preview1.fd_pwrite",
+      "wasi_snapshot_preview1.fd_read",
+      "wasi_snapshot_preview1.fd_readdir",
+      "wasi_snapshot_preview1.fd_seek",
+      "wasi_snapshot_preview1.fd_sync",
+      "wasi_snapshot_preview1.fd_tell",
+      "wasi_snapshot_preview1.fd_write",
+      "wasi_snapshot_preview1.path_create_directory",
+      "wasi_snapshot_preview1.path_filestat_get",
+      "wasi_snapshot_preview1.path_filestat_set_times",
+      "wasi_snapshot_preview1.path_link",
+      "wasi_snapshot_preview1.path_open",
+      "wasi_snapshot_preview1.path_readlink",
+      "wasi_snapshot_preview1.path_remove_directory",
+      "wasi_snapshot_preview1.path_rename",
+      "wasi_snapshot_preview1.path_symlink",
+      "wasi_snapshot_preview1.path_unlink_file",
+      "wasi_snapshot_preview1.poll_oneoff",
+      "wasi_snapshot_preview1.proc_exit",
+      "wasi_snapshot_preview1.sched_yield",
+      "wasi_snapshot_preview1.random_get",
+      "wasi_snapshot_preview1.sock_accept",
+      "wasi_snapshot_preview1.sock_recv",
+      "wasi_snapshot_preview1.sock_send",
+      "wasi_snapshot_preview1.sock_shutdown"
+     ],
+     "runs": [
+      {
+       "ms": 995.015000000596,
+       "instantiateMs": 4.990000000223517,
+       "memoryBytes": 21102592,
+       "code": 0,
+       "trap": null,
+       "truncated": false,
+       "stdout": "{\"bench\": \"python\", \"result\": [2864133, 393133, 988094463], \"import_ms\": 0.030000000000002247, \"work_ms\": [252.06, 159.20999999999995, 151.22999999999996, 182.18500000000003, 152.83500000000006]}\n",
+       "stderr": "",
+       "stdoutHash": null
+      },
+      {
+       "ms": 797.679999999702,
+       "instantiateMs": 4.7650000005960464,
+       "memoryBytes": 21102592,
+       "code": 0,
+       "trap": null,
+       "truncated": false,
+       "stdout": "{\"bench\": \"python\", \"result\": [2864133, 393133, 988094463], \"import_ms\": 0.009999999999843467, \"work_ms\": [150.6050000000001, 154.6050000000001, 149.9299999999999, 150.285, 157.35999999999996]}\n",
+       "stderr": "",
+       "stdoutHash": null
+      },
+      {
+       "ms": 820.179999999702,
+       "instantiateMs": 4.7349999994039536,
+       "memoryBytes": 21102592,
+       "code": 0,
+       "trap": null,
+       "truncated": false,
+       "stdout": "{\"bench\": \"python\", \"result\": [2864133, 393133, 988094463], \"import_ms\": 0.0, \"work_ms\": [155.1950000000002, 161.2450000000001, 155.2150000000001, 155.20500000000004, 158.40999999999994]}\n",
+       "stderr": "",
+       "stdoutHash": null
+      }
+     ],
+     "totalMs": 2828.0250000003725
+    }
+   }
+  },
+  {
+   "file": "bench_sympy.py",
+   "sourceSha256": "158ffb4c47b0875e141166f0d6e568ca51091ef8cb02eec19fb2e3cd9d055d1a",
+   "status": "exit 0; first run 12.81 s; repeats 6.06, 6.33 s",
+   "exit": 0,
+   "trap": null,
+   "stdout": "{\"bench\": \"sympy\", \"result_sha\": \"e90e27901539395c1c4af82a36ffaf67c01d003abec47213fe97f78803a76714\", \"import_ms\": 549.7099999999999, \"work_ms\": [2965.29, 2306.78, 2222.4000000000005, 2288.105, 2143.2350000000006]}\n",
+   "stdoutSha256": "7e303c5aef504ac081e84e755f92ca616ff43f83e11a6cf97fec461b962d497a",
+   "stderr": "",
+   "evidence": {
+    "assetDownloadMs": 507.75,
+    "assetBytes": 289157312,
+    "compilerInitMs": 698.179999999702,
+    "compile": {
+     "sourceHash": "158ffb4c47b0875e141166f0d6e568ca51091ef8cb02eec19fb2e3cd9d055d1a",
+     "wasmHash": "6f816342c29b98d8d3016209b480b0deffeb867e86961c8f6e80a75e8f04fea0",
+     "wasmBytes": 26388823,
+     "cHashes": {
+      "module.__main__.const": "b1ca75636b8a4ac7bbc25ad2e64c64698999092e7bf7b8c967b3f4f8d03a9625",
+      "module.__main__.c": "f3127752f876c0a396c4fb64a15de4a879cce2de53474bc0872c3dc74118c66a",
+      "__constants.const": "a1116074a622187dadd4f006b609574d039311734bd65be96b8bd855d1f3d159",
+      "__helpers.h": "4f4ec03f35a0017d3e6d63226414333ea003b2a2e01af6439ef0232d01e30107",
+      "__helpers.c": "b4dbfc627b20fb92231456a7edb1a3a689ede4ddcb1b01b879911ab239a2fd3a",
+      "__constants.h": "252c58d4595d2bb483c08fb5515919a5611b58fac653f50100826ce68aa15200",
+      "__constants.c": "febb12cfc6d9282774e73035e23acea90ddd32a56878a01dc037802733647b3f",
+      "__bytecode.const": "70ce719bba91b19f5db91e0545873deb421051b51f82c611b6ebbc4ff71595e9",
+      "__loader.c": "6d0ab44d3b5006bb3425475c472d8fa12e62de0e939caab1637c2ebbc0831ce5",
+      "__constants_data.c": "323e981c6689cb2f1ef1aeeeab4e0f56ad06590640f9e46b826ff4f723172cab",
+      "static_src/MainProgram.c": "403b5c1d0c29f378ebc3a7acd573234a5ca6235d45ddb8573d38f3d3e3b206eb",
+      "static_src/CompiledFunctionType.c": "cf893f7c4d5f79f17df685485d69ecb3c2a13b3dbd68615175e159c1a974935e",
+      "build_definitions.h": "4c417a0a6e2a6f7473ebbc23ec3770b0e59b01d4d7c5df2e132ca65b271f1b1f"
+     },
+     "plan": [
+      {
+       "cwd": "/work/job1790992254780/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "__constants.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "__constants.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992254780/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "__constants_data.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "__constants_data.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992254780/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "__helpers.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "__helpers.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992254780/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "__loader.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "__loader.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992254780/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "module.__main__.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "module.__main__.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992254780/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "static_src/MainProgram.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "static_src/MainProgram.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992254780/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "static_src/CompiledFunctionType.o",
+        "-c",
+        "-flto",
+        "-std=c11",
+        "-fvisibility=hidden",
+        "-fwrapv",
+        "-pipe",
+        "-w",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "--target=wasm32-wasip1",
+        "-D_WASI_EMULATED_MMAN",
+        "-D_WASI_EMULATED_GETPID",
+        "-D_WASI_EMULATED_SIGNAL",
+        "-D_WASI_EMULATED_PROCESS_CLOCKS",
+        "-O2",
+        "-D_XOPEN_SOURCE",
+        "-D__NUITKA_NO_ASSERT__",
+        "-D_NUITKA_STANDALONE",
+        "-DPy_NO_ENABLE_SHARED",
+        "-D_NUITKA_STATIC_LIBPYTHON",
+        "-D_NUITKA_USE_UNEXPOSED_API",
+        "-D_NUITKA_CONSTANTS_FROM_CODE",
+        "-D_NUITKA_FROZEN=152",
+        "-D_NUITKA_EXE",
+        "-I/nuitka/nuitka/build/inline_copy/zlib",
+        "-I/target/include/python3.11",
+        "-I.",
+        "-I/nuitka/nuitka/build/include",
+        "-I/nuitka/nuitka/build/static_src",
+        "-I/nuitka/nuitka/build/inline_copy/libbacktrace",
+        "static_src/CompiledFunctionType.c"
+       ]
+      },
+      {
+       "cwd": "/work/job1790992254780/out/main.build",
+       "argv": [
+        "/toolchain/bin/clang",
+        "-o",
+        "/work/job1790992254780/out/main.dist/main.bin",
+        "-flto",
+        "--target=wasm32-wasip1",
+        "-lwasi-emulated-mman",
+        "-lwasi-emulated-getpid",
+        "-lwasi-emulated-signal",
+        "-lwasi-emulated-process-clocks",
+        "-ldl",
+        "-lmpdec",
+        "-lexpat",
+        "-lz",
+        "-O2",
+        "-z",
+        "noexecstack",
+        "@./@link_input.txt",
+        "-L/target/lib",
+        "-lm",
+        "/target/lib/libpython3.11.a"
+       ]
+      }
+     ],
+     "linkArgv": [
+      "/toolchain/bin/clang",
+      "-o",
+      "/work/job1790992254780/out/main.dist/main.bin",
+      "-flto",
+      "--target=wasm32-wasip1",
+      "-lwasi-emulated-mman",
+      "-lwasi-emulated-getpid",
+      "-lwasi-emulated-signal",
+      "-lwasi-emulated-process-clocks",
+      "-ldl",
+      "-lmpdec",
+      "-lexpat",
+      "-lz",
+      "-O2",
+      "-z",
+      "noexecstack",
+      "@./@link_input.txt",
+      "-L/target/lib",
+      "-lm",
+      "/target/lib/libpython3.11.a",
+      "-Wl,-z,stack-size=8388608",
+      "-Wl,--stack-first",
+      "-Wl,--max-memory=2147483648"
+     ],
+     "stages": [
+      {
+       "name": "vfs-setup",
+       "ms": 135.32000000029802
+      },
+      {
+       "name": "python-to-c",
+       "ms": 162342.61999999918,
+       "frontendRuns": [
+        {
+         "attempt": 0,
+         "ms": 926.3199999984354,
+         "code": 1
+        },
+        {
+         "attempt": 1,
+         "ms": 814.0049999989569,
+         "code": 1
+        },
+        {
+         "attempt": 2,
+         "ms": 160240.94499999844,
+         "code": 0
+        }
+       ],
+       "cFiles": 13,
+       "planSteps": 8
+      },
+      {
+       "name": "c-compile",
+       "ms": 23251.035000003874,
+       "objects": 7
+      },
+      {
+       "name": "link",
+       "ms": 47102.580000000075
+      }
+     ],
+     "workerNet": [
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core.wasm",
+       "served": "memory",
+       "bytes": 72690007
+      },
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm-resources.tar",
+       "served": "memory",
+       "bytes": 29603840
+      },
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core2.wasm",
+       "served": "memory",
+       "bytes": 37626
+      },
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core3.wasm",
+       "served": "memory",
+       "bytes": 5458
+      },
+      {
+       "url": "http://localhost:8645/vendor/yowasp-clang/llvm.core4.wasm",
+       "served": "memory",
+       "bytes": 787
+      }
+     ],
+     "totalMs": 232903.41000000015,
+     "interpretedPackages": [
+      "sympy",
+      "mpmath"
+     ]
+    },
+    "run": {
+     "type": "done",
+     "wasmCompileMs": 15.384999999776483,
+     "runtimeFsMs": 81.69500000029802,
+     "imports": [
+      "wasi_snapshot_preview1.args_get",
+      "wasi_snapshot_preview1.args_sizes_get",
+      "wasi_snapshot_preview1.environ_get",
+      "wasi_snapshot_preview1.environ_sizes_get",
+      "wasi_snapshot_preview1.clock_res_get",
+      "wasi_snapshot_preview1.clock_time_get",
+      "wasi_snapshot_preview1.fd_advise",
+      "wasi_snapshot_preview1.fd_close",
+      "wasi_snapshot_preview1.fd_datasync",
+      "wasi_snapshot_preview1.fd_fdstat_get",
+      "wasi_snapshot_preview1.fd_fdstat_set_flags",
+      "wasi_snapshot_preview1.fd_filestat_get",
+      "wasi_snapshot_preview1.fd_filestat_set_size",
+      "wasi_snapshot_preview1.fd_filestat_set_times",
+      "wasi_snapshot_preview1.fd_pread",
+      "wasi_snapshot_preview1.fd_prestat_get",
+      "wasi_snapshot_preview1.fd_prestat_dir_name",
+      "wasi_snapshot_preview1.fd_pwrite",
+      "wasi_snapshot_preview1.fd_read",
+      "wasi_snapshot_preview1.fd_readdir",
+      "wasi_snapshot_preview1.fd_seek",
+      "wasi_snapshot_preview1.fd_sync",
+      "wasi_snapshot_preview1.fd_tell",
+      "wasi_snapshot_preview1.fd_write",
+      "wasi_snapshot_preview1.path_create_directory",
+      "wasi_snapshot_preview1.path_filestat_get",
+      "wasi_snapshot_preview1.path_filestat_set_times",
+      "wasi_snapshot_preview1.path_link",
+      "wasi_snapshot_preview1.path_open",
+      "wasi_snapshot_preview1.path_readlink",
+      "wasi_snapshot_preview1.path_remove_directory",
+      "wasi_snapshot_preview1.path_rename",
+      "wasi_snapshot_preview1.path_symlink",
+      "wasi_snapshot_preview1.path_unlink_file",
+      "wasi_snapshot_preview1.poll_oneoff",
+      "wasi_snapshot_preview1.proc_exit",
+      "wasi_snapshot_preview1.sched_yield",
+      "wasi_snapshot_preview1.random_get",
+      "wasi_snapshot_preview1.sock_accept",
+      "wasi_snapshot_preview1.sock_recv",
+      "wasi_snapshot_preview1.sock_send",
+      "wasi_snapshot_preview1.sock_shutdown"
+     ],
+     "runs": [
+      {
+       "ms": 12810.054999999702,
+       "instantiateMs": 5.235000001266599,
+       "memoryBytes": 55640064,
+       "code": 0,
+       "trap": null,
+       "truncated": false,
+       "stdout": "{\"bench\": \"sympy\", \"result_sha\": \"e90e27901539395c1c4af82a36ffaf67c01d003abec47213fe97f78803a76714\", \"import_ms\": 549.7099999999999, \"work_ms\": [2965.29, 2306.78, 2222.4000000000005, 2288.105, 2143.2350000000006]}\n",
+       "stderr": "",
+       "stdoutHash": null
+      },
+      {
+       "ms": 6060.49499999918,
+       "instantiateMs": 6.6400000005960464,
+       "memoryBytes": 55640064,
+       "code": 0,
+       "trap": null,
+       "truncated": false,
+       "stdout": "{\"bench\": \"sympy\", \"result_sha\": \"e90e27901539395c1c4af82a36ffaf67c01d003abec47213fe97f78803a76714\", \"import_ms\": 249.2750000000008, \"work_ms\": [1371.2649999999992, 1059.6099999999992, 1031.044999999999, 1086.1449999999984, 1120.8350000000032]}\n",
+       "stderr": "",
+       "stdoutHash": null
+      },
+      {
+       "ms": 6332.519999999553,
+       "instantiateMs": 8.93500000052154,
+       "memoryBytes": 55640064,
+       "code": 0,
+       "trap": null,
+       "truncated": false,
+       "stdout": "{\"bench\": \"sympy\", \"result_sha\": \"e90e27901539395c1c4af82a36ffaf67c01d003abec47213fe97f78803a76714\", \"import_ms\": 449.9999999999993, \"work_ms\": [1522.7900000000004, 1059.6999999999994, 1038.884999999997, 1064.664999999998, 1058.6699999999994]}\n",
+       "stderr": "",
+       "stdoutHash": null
+      }
+     ],
+     "totalMs": 25412.28500000015
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,84 @@
+{
+ "selfCompiledNuitka": {
+  "file": "web/assets/nuitka-selfc.wasm (built by experiments/selfcompile/build-selfc.sh)",
+  "bytes": 70426743,
+  "sha256": "7dbc19d5af5ae27cbde8c9280f9171c4bcf728728c4c1f0cc5d9cc0658a42f62",
+  "nuitka": "2.6.3 + patches/nuitka-2.6.3-py2wasm-wasi-frontend.patch",
+  "patchSha256": "04316b3a55be4dc250a0deaf3df9926ee4e03d19520b6f41a1c89b031cfcb2dd",
+  "buildPlanSteps": 401,
+  "compiledModules": 394,
+  "compiledNuitkaModules": 390,
+  "lto": false,
+  "buildWallClock": "70 min 9 s (frontend: python.wasm under wasmtime; plan: YoWASP clang/wasm-ld under Node, same plan executor as the browser)",
+  "buildLog": "results/milestoneE/build-selfc4.log"
+ },
+ "hostRun": {
+  "command": "experiments/selfcompile/run-selfc.sh ~/work/selfc4.wasm t4 results/milestoneE/fresh.py, then run-plan-node.mjs on the plan, then wasmtime",
+  "sourceSha256": "78577d676a6f4e3021fb2155c02ccc3b1083c38b740fd06ee0dfbe3ff09ae9c7",
+  "stdoutSha256": "dd48b7430404bdc8d9c0a0ddf440b434c36bde3f8386c7470f70e5e34d63974b",
+  "stdoutIdenticalToCPython": true,
+  "generatedWasmSha256": "aa05e56d5a0ba9933be095d90a1198f1cce8a6f625ab9e3f062f8c0a4d822be8"
+ },
+ "browserRun": {
+  "harness": "npm run test:selfc (tests/selfc-proof.sh)",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/137.0.0.0 Safari/537.36",
+  "offline": true,
+  "serverRequestsAfterOffline": [],
+  "programs": [
+   {
+    "file": "selfc-unseen-source.py",
+    "sourceSha256": "03498d982046c0979a91cc7e137bfaea8cc57b223d7d585ed2aad42799072ac1",
+    "exit": 0,
+    "stdoutSha256": "036501a2cbdb77e421465f15855efb8250d997a3cc1091f17cf5ce976a35508c",
+    "wasmSha256": "ebced2cac1b6fb7ded07b08ebccbada01b4ffae39f523f49c756237c1523da7d",
+    "wasmBytes": 23980845,
+    "frontend": {
+     "mode": "selfc",
+     "wasmSha256": "7dbc19d5af5ae27cbde8c9280f9171c4bcf728728c4c1f0cc5d9cc0658a42f62"
+    },
+    "stagesMs": {
+     "vfs-setup": 112,
+     "python-to-c": 70030,
+     "c-compile": 17954,
+     "link": 26027
+    },
+    "frontendRunsMs": [
+     1152,
+     798,
+     67663
+    ],
+    "workerRefusedFetches": 0
+   },
+   {
+    "file": "python_basics.py",
+    "sourceSha256": "f15394db017fe98a0b2c1767c3d89001eba690ba7fc64632adc730811e297eeb",
+    "exit": 0,
+    "stdoutSha256": "e35247f1b8b2cef72610e5e7efa0935f07cc4da702d702192a05aa3dfb646e42",
+    "wasmSha256": "b68bb7db0801c6492ce99091e5a37eef7fdfc176b90b9b6dc1ce9f032b1fd9cf",
+    "wasmBytes": 24697895,
+    "frontend": {
+     "mode": "selfc",
+     "wasmSha256": "7dbc19d5af5ae27cbde8c9280f9171c4bcf728728c4c1f0cc5d9cc0658a42f62"
+    },
+    "stagesMs": {
+     "vfs-setup": 122,
+     "python-to-c": 82816,
+     "c-compile": 18008,
+     "link": 27303
+    },
+    "frontendRunsMs": [
+     741,
+     767,
+     80973
+    ],
+    "workerRefusedFetches": 0
+   }
+  ],
+  "comparison": "results/selfc-comparison.json (stdout/exit vs Pyodide 0.25.1 + trusted values: 3/3 and 15/15 checks)"
+ },
+ "earlierAttempts": [
+  "selfc (LTO): wasm-ld LTO link aborted, FAILURES #25",
+  "selfc.wasm/selfc2.wasm: ctypes abort, appdirs, sys.path, encodings; FAILURES #28-#32",
+  "selfc3.wasm: heap corruption from missing 8 MiB stack link flags, FAILURES #33"
+ ]
+}

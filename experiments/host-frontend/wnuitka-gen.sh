@@ -1,0 +1,3 @@
+#!/bin/sh
+# Run the Nuitka frontend inside CPython-3.11.8/WASI under wasmtime (host stand-in for the browser worker)
+exec wasmtime run -W max-wasm-stack=8388608 --dir $HOME/work/fs::/ --dir $HOME/work/nuitka-wasi::/nuitka --dir $HOME/work/toolchain::/toolchain --env PYTHONPATH=/nuitka:/usr/local/lib/python3.11/site-packages --env PYTHONHASHSEED=0 --env NUITKA_WASI_FRONTEND=1 --env CC=/toolchain/bin/clang --env PATH=/toolchain/bin --env HOME=/tmp --env NUITKA_WASI_BUILD_PLAN=${PLAN:-/work/plan.jsonl} --env NUITKA_WASI_PROBE_CACHE=/toolchain/probe-cache.json --env NUITKA_WASI_PYTHON_PREFIX=/target -- $HOME/work/cpython-3.11.8/builddir/wasi/python.wasm -S -X frozen_modules=off "$@"

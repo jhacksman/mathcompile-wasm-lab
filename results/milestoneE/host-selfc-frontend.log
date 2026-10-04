@@ -1,0 +1,11 @@
+Nuitka-Options: Used command line options: /work/t4/main.py --standalone --static-libpython=yes --disable-ccache --lto=no --no-progressbar --jobs=1 --nofollow-import-to=sympy --nofollow-import-to=mpmath --output-dir=/work/t4/out
+Nuitka-Options:WARNING: Standalone mode on wasi is not known to be supported, might fail to work.
+Nuitka:WARNING: Using very slow fallback for ordered sets, please install 'ordered-set' PyPI package for best Python compile time performance.
+Nuitka: Starting Python compilation with Nuitka '2.6.3' on Python '3.11' commercial grade 'not installed'.
+Nuitka: Completed Python level compilation and optimization.
+Nuitka: Generating source code for C backend compiler.
+Nuitka: Running data composer tool for optimal constant value handling.
+Nuitka: Running C compilation via Scons.
+Nuitka-Scons: Backend C compiler: /toolchain/bin/clang (clang 21.1.4).
+Nuitka: Keeping build directory '/work/t4/out/main.build'.
+Nuitka: Successfully created '/work/t4/out/main.dist/main.bin'.

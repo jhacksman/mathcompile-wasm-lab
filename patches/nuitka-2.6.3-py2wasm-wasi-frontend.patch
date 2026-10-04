@@ -1,0 +1,1638 @@
+diff --git a/nuitka/PostProcessing.py b/nuitka/PostProcessing.py
+index 74438b5..48bb67f 100644
+--- a/nuitka/PostProcessing.py
++++ b/nuitka/PostProcessing.py
+@@ -5,7 +5,10 @@
+ 
+ """
+ 
+-import ctypes
++try:
++    import ctypes
++except ImportError:  # WASI CPython has no _ctypes
++    ctypes = None
+ import os
+ import sys
+ 
+@@ -49,41 +52,44 @@ from nuitka.utils.WindowsResources import (
+ )
+ 
+ 
+-class IconDirectoryHeader(ctypes.Structure):
+-    _fields_ = [
+-        ("reserved", ctypes.c_short),
+-        ("type", ctypes.c_short),
+-        ("count", ctypes.c_short),
+-    ]
+-
+-
+-class IconDirectoryEntry(ctypes.Structure):
+-    _fields_ = [
+-        ("width", ctypes.c_char),
+-        ("height", ctypes.c_char),
+-        ("colors", ctypes.c_char),
+-        ("reserved", ctypes.c_char),
+-        ("planes", ctypes.c_short),
+-        ("bit_count", ctypes.c_short),
+-        ("image_size", ctypes.c_int),
+-        ("image_offset", ctypes.c_int),
+-    ]
+-
+-
+-class IconGroupDirectoryEntry(ctypes.Structure):
+-    # Make sure the don't have padding issues.
+-    _pack_ = 2
+-
+-    _fields_ = (
+-        ("width", ctypes.c_char),
+-        ("height", ctypes.c_char),
+-        ("colors", ctypes.c_char),
+-        ("reserved", ctypes.c_char),
+-        ("planes", ctypes.c_short),
+-        ("bit_count", ctypes.c_short),
+-        ("image_size", ctypes.c_int),
+-        ("id", ctypes.c_short),
+-    )
++if ctypes is not None:
++    class IconDirectoryHeader(ctypes.Structure):
++        _fields_ = [
++            ("reserved", ctypes.c_short),
++            ("type", ctypes.c_short),
++            ("count", ctypes.c_short),
++        ]
++
++
++if ctypes is not None:
++    class IconDirectoryEntry(ctypes.Structure):
++        _fields_ = [
++            ("width", ctypes.c_char),
++            ("height", ctypes.c_char),
++            ("colors", ctypes.c_char),
++            ("reserved", ctypes.c_char),
++            ("planes", ctypes.c_short),
++            ("bit_count", ctypes.c_short),
++            ("image_size", ctypes.c_int),
++            ("image_offset", ctypes.c_int),
++        ]
++
++
++if ctypes is not None:
++    class IconGroupDirectoryEntry(ctypes.Structure):
++        # Make sure the don't have padding issues.
++        _pack_ = 2
++
++        _fields_ = (
++            ("width", ctypes.c_char),
++            ("height", ctypes.c_char),
++            ("colors", ctypes.c_char),
++            ("reserved", ctypes.c_char),
++            ("planes", ctypes.c_short),
++            ("bit_count", ctypes.c_short),
++            ("image_size", ctypes.c_int),
++            ("id", ctypes.c_short),
++        )
+ 
+ 
+ def readFromFile(readable, c_struct):
+@@ -449,3 +455,9 @@ executable by Windows due to its limitations."""
+ #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ #     See the License for the specific language governing permissions and
+ #     limitations under the License.
++
++
++if ctypes is None:  # WASI frontend host
++    IconDirectoryHeader = None
++    IconDirectoryEntry = None
++    IconGroupDirectoryEntry = None
+diff --git a/nuitka/PythonVersions.py b/nuitka/PythonVersions.py
+index 9ebb274..1c93a5d 100644
+--- a/nuitka/PythonVersions.py
++++ b/nuitka/PythonVersions.py
+@@ -11,7 +11,10 @@ should attempt to make run time detections.
+ 
+ import __future__
+ 
+-import ctypes
++try:
++    import ctypes
++except ImportError:  # WASI CPython has no _ctypes
++    ctypes = None
+ import os
+ import re
+ import sys
+@@ -285,7 +288,10 @@ def getSystemPrefixPath():
+     if _the_sys_prefix is None:
+         if True:
+             # WASI-Python
+-            wasi_python_dir = os.path.join(os.path.dirname(__file__), "wasi-python")
++            wasi_python_dir = os.environ.get(
++                "NUITKA_WASI_PYTHON_PREFIX",
++                os.path.join(os.path.dirname(__file__), "wasi-python"),
++            )
+             _the_sys_prefix = wasi_python_dir
+             return _the_sys_prefix
+ 
+@@ -414,7 +420,7 @@ _max_signed_long = 2 ** (sizeof_clong * 7) - 1
+ _min_signed_long = -(2 ** (sizeof_clong * 7))
+ 
+ # Used by data composer to write Python long values.
+-sizeof_clonglong = ctypes.sizeof(ctypes.c_longlong)
++sizeof_clonglong = 8  # wasm32 target ABI (ctypes unavailable on WASI)
+ 
+ _max_signed_longlong = 2 ** (sizeof_clonglong * 8 - 1) - 1
+ _min_signed_longlong = -(2 ** (sizeof_clonglong * 8 - 1))
+diff --git a/nuitka/Tracing.py b/nuitka/Tracing.py
+index 22d2a76..6894a25 100644
+--- a/nuitka/Tracing.py
++++ b/nuitka/Tracing.py
+@@ -169,7 +169,7 @@ def _getTerminalSize():
+     else:
+         try:
+             return os.get_terminal_size()[0]
+-        except OSError:
++        except (OSError, AttributeError):  # WASI has no os.get_terminal_size
+             return 1000
+ 
+ 
+diff --git a/nuitka/build/DataComposerInterface.py b/nuitka/build/DataComposerInterface.py
+index d392355..cfe1c8a 100644
+--- a/nuitka/build/DataComposerInterface.py
++++ b/nuitka/build/DataComposerInterface.py
+@@ -56,6 +56,23 @@ def _runDataComposer(source_dir):
+ 
+     stats_filename = changeFilenameExtension(blob_filename, ".txt")
+ 
++    if sys.platform == "wasi":
++        # No processes on WASI, run the composer inside this interpreter.
++        from nuitka.tools.data_composer import DataComposer
++
++        old_argv = sys.argv
++        sys.argv = [data_composer_path, source_dir, blob_filename, stats_filename]
++        try:
++            with withEnvironmentVarsOverridden(mapping):
++                DataComposer.main()
++        except SystemExit as e:
++            if e.code not in (0, None):
++                raise
++        finally:
++            sys.argv = old_argv
++
++        return blob_filename, loadJsonFromFilename(stats_filename)
++
+     with withEnvironmentVarsOverridden(mapping):
+         try:
+             subprocess.check_call(
+diff --git a/nuitka/build/SconsCompilerSettings.py b/nuitka/build/SconsCompilerSettings.py
+index f3fd947..258adbf 100644
+--- a/nuitka/build/SconsCompilerSettings.py
++++ b/nuitka/build/SconsCompilerSettings.py
+@@ -642,7 +642,7 @@ def setupCCompiler(env, lto_mode, pgo_mode, job_count, onefile_compile):
+ 
+     if True:
+         # For WASI
+-        target_flag = "--target=wasm32-wasi"
++        target_flag = "--target=wasm32-wasip1"  # same triple as libpython and the browser clang sysroot
+         env.Append(CCFLAGS=[target_flag])
+         env.Append(LINKFLAGS=[target_flag])
+         # env.Append(CCFLAGS=["-D_NUITKA_EXPERIMENTAL_DEBUG_CONSTANTS=1"])
+@@ -672,6 +672,7 @@ def setupCCompiler(env, lto_mode, pgo_mode, job_count, onefile_compile):
+         # expat
+         # /Users/syrusakbary/Development/cpython-3.11/builddir/wasi/Modules/expat/
+         env.Append(LINKFLAGS=["-lexpat"])
++        env.Append(LINKFLAGS=["-lz"])  # zlib module is built into libpython
+     # Support for macOS standalone to run on older OS versions.
+     elif isMacOS():
+         setEnvironmentVariable(env, "MACOSX_DEPLOYMENT_TARGET", env.macos_min_version)
+diff --git a/nuitka/build/SconsInterface.py b/nuitka/build/SconsInterface.py
+index 62ef832..a348a44 100644
+--- a/nuitka/build/SconsInterface.py
++++ b/nuitka/build/SconsInterface.py
+@@ -79,7 +79,7 @@ def _getSconsBinaryCall():
+ 
+     if os.path.exists(inline_path):
+         return [
+-            _getPythonForSconsExePath(),
++            sys.executable if sys.platform == "wasi" else _getPythonForSconsExePath(),
+             "-W",
+             "ignore",  # Disable Python warnings in case of debug Python.
+             getExternalUsePath(inline_path),
+@@ -247,6 +247,34 @@ def _buildSconsCommand(options, scons_filename):
+     return scons_command
+ 
+ 
++def _runSconsInProcess(scons_command, cwd):
++    """Run the inline Scons inside this interpreter, WASI has no processes.
++
++    The build actions are not executed here, see "SconsSpawn", they are
++    recorded into a build plan for the browser hosted clang/lld.
++    """
++    import runpy
++
++    script_index = [
++        i for i, arg in enumerate(scons_command) if arg.endswith("scons.py")
++    ][0]
++
++    old_argv, old_path, old_cwd = sys.argv, list(sys.path), os.getcwd()
++    sys.argv = scons_command[script_index:]
++    try:
++        if cwd is not None:
++            os.chdir(cwd)
++        runpy.run_path(scons_command[script_index], run_name="__main__")
++        result = 0
++    except SystemExit as e:
++        result = e.code if type(e.code) is int else (0 if e.code is None else 1)
++    finally:
++        sys.argv, sys.path[:] = old_argv, old_path
++        os.chdir(old_cwd)
++
++    return result
++
++
+ def runScons(options, env_values, scons_filename):
+     with _setupSconsEnvironment():
+         env_values["_NUITKA_BUILD_DEFINITIONS_CATALOG"] = ",".join(env_values.keys())
+@@ -288,7 +316,10 @@ def runScons(options, env_values, scons_filename):
+ 
+         with withEnvironmentVarsOverridden(env_values):
+             try:
+-                result = subprocess.call(scons_command, shell=False, cwd=source_dir)
++                if sys.platform == "wasi":
++                    result = _runSconsInProcess(scons_command, cwd=source_dir)
++                else:
++                    result = subprocess.call(scons_command, shell=False, cwd=source_dir)
+             except KeyboardInterrupt:
+                 Tracing.scons_logger.sysexit("User interrupted scons build.")
+ 
+diff --git a/nuitka/build/SconsSpawn.py b/nuitka/build/SconsSpawn.py
+index 931751b..764d3b6 100644
+--- a/nuitka/build/SconsSpawn.py
++++ b/nuitka/build/SconsSpawn.py
+@@ -382,6 +382,30 @@ def _runSpawnMonitored(env, sh, cmd, args, os_env):
+     return thread.getSpawnResult()
+ 
+ 
++def _recordWasiSpawn(args):
++    """Record a build action for the browser hosted clang/lld.
++
++    WASI cannot spawn processes. The command line Scons decided on is appended
++    to the build plan "NUITKA_WASI_BUILD_PLAN" (JSON lines), and an empty
++    placeholder is created for the target so Scons dependency tracking works.
++    The host executes the plan in order and replaces every placeholder.
++    """
++    import json
++    import shlex
++
++    argv = shlex.split(" ".join(args))
++
++    with open(os.environ["NUITKA_WASI_BUILD_PLAN"], "a") as plan_file:
++        plan_file.write(json.dumps({"cwd": os.getcwd(), "argv": argv}) + "\n")
++
++    if "-o" in argv:
++        target = argv[argv.index("-o") + 1]
++        with open(target, "wb"):
++            pass
++
++    return 0
++
++
+ def _getWrappedSpawnFunction(env):
+     def spawnCommand(sh, escape, cmd, args, os_env):
+         # signature needed towards Scons core, pylint: disable=unused-argument
+@@ -392,7 +416,10 @@ def _getWrappedSpawnFunction(env):
+             os_env = dict(os_env)
+             os_env["CCACHE_DISABLE"] = "1"
+ 
+-        result, exception = _runSpawnMonitored(env, sh, cmd, args, os_env)
++        if sys.platform == "wasi":
++            result, exception = _recordWasiSpawn(args), None
++        else:
++            result, exception = _runSpawnMonitored(env, sh, cmd, args, os_env)
+ 
+         if exception:
+             closeSconsProgressBar()
+diff --git a/nuitka/build/SconsUtils.py b/nuitka/build/SconsUtils.py
+index 1a2b2ed..71ab3fd 100644
+--- a/nuitka/build/SconsUtils.py
++++ b/nuitka/build/SconsUtils.py
+@@ -540,6 +540,14 @@ def isClangName(cc_name):
+     return "clang" in cc_name and "-cl" not in cc_name
+ 
+ 
++def _copyFileContents(src, dst):
++    # WASI has no chmod, mode bits are irrelevant for C sources there.
++    if sys.platform == "wasi":
++        shutil.copyfile(src, dst)
++    else:
++        shutil.copy(src, dst)
++
++
+ def cheapCopyFile(src, dst):
+     dirname = os.path.dirname(dst)
+     if not os.path.exists(dirname):
+@@ -550,7 +558,7 @@ def cheapCopyFile(src, dst):
+         # with Python2 at least. So make a copy in any case.
+         if os.path.exists(dst):
+             os.unlink(dst)
+-        shutil.copy(src, dst)
++        _copyFileContents(src, dst)
+     else:
+         # Relative paths work badly for links. Creating them relative is
+         # not worth the effort.
+@@ -575,7 +583,7 @@ def cheapCopyFile(src, dst):
+         try:
+             os.symlink(src, dst)
+         except OSError:
+-            shutil.copy(src, dst)
++            _copyFileContents(src, dst)
+ 
+ 
+ def provideStaticSourceFile(env, sub_path, c11_mode):
+diff --git a/nuitka/build/static_src/CompiledAsyncgenType.c b/nuitka/build/static_src/CompiledAsyncgenType.c
+index f782077..0ec514b 100644
+--- a/nuitka/build/static_src/CompiledAsyncgenType.c
++++ b/nuitka/build/static_src/CompiledAsyncgenType.c
+@@ -63,14 +63,14 @@ static void Nuitka_MarkAsyncgenAsNotRunning(struct Nuitka_AsyncgenObject *asyncg
+ 
+ static long Nuitka_Asyncgen_tp_hash(struct Nuitka_AsyncgenObject *asyncgen) { return asyncgen->m_counter; }
+ 
+-static PyObject *Nuitka_Asyncgen_get_name(struct Nuitka_AsyncgenObject *asyncgen) {
++static PyObject *Nuitka_Asyncgen_get_name(struct Nuitka_AsyncgenObject *asyncgen, void *closure) {
+     CHECK_OBJECT(asyncgen);
+ 
+     Py_INCREF(asyncgen->m_name);
+     return asyncgen->m_name;
+ }
+ 
+-static int Nuitka_Asyncgen_set_name(struct Nuitka_AsyncgenObject *asyncgen, PyObject *value) {
++static int Nuitka_Asyncgen_set_name(struct Nuitka_AsyncgenObject *asyncgen, PyObject *value, void *closure) {
+     CHECK_OBJECT(asyncgen);
+     CHECK_OBJECT_X(value);
+ 
+@@ -90,14 +90,14 @@ static int Nuitka_Asyncgen_set_name(struct Nuitka_AsyncgenObject *asyncgen, PyOb
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Asyncgen_get_qualname(struct Nuitka_AsyncgenObject *asyncgen) {
++static PyObject *Nuitka_Asyncgen_get_qualname(struct Nuitka_AsyncgenObject *asyncgen, void *closure) {
+     CHECK_OBJECT(asyncgen);
+ 
+     Py_INCREF(asyncgen->m_qualname);
+     return asyncgen->m_qualname;
+ }
+ 
+-static int Nuitka_Asyncgen_set_qualname(struct Nuitka_AsyncgenObject *asyncgen, PyObject *value) {
++static int Nuitka_Asyncgen_set_qualname(struct Nuitka_AsyncgenObject *asyncgen, PyObject *value, void *closure) {
+     CHECK_OBJECT(asyncgen);
+     CHECK_OBJECT_X(value);
+ 
+@@ -117,7 +117,7 @@ static int Nuitka_Asyncgen_set_qualname(struct Nuitka_AsyncgenObject *asyncgen,
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Asyncgen_get_ag_await(struct Nuitka_AsyncgenObject *asyncgen) {
++static PyObject *Nuitka_Asyncgen_get_ag_await(struct Nuitka_AsyncgenObject *asyncgen, void *closure) {
+     CHECK_OBJECT(asyncgen);
+ 
+     if (asyncgen->m_yield_from) {
+@@ -129,7 +129,7 @@ static PyObject *Nuitka_Asyncgen_get_ag_await(struct Nuitka_AsyncgenObject *asyn
+     }
+ }
+ 
+-static PyObject *Nuitka_Asyncgen_get_code(struct Nuitka_AsyncgenObject *asyncgen) {
++static PyObject *Nuitka_Asyncgen_get_code(struct Nuitka_AsyncgenObject *asyncgen, void *closure) {
+     CHECK_OBJECT(asyncgen);
+     CHECK_OBJECT(asyncgen->m_code_object);
+ 
+@@ -137,7 +137,7 @@ static PyObject *Nuitka_Asyncgen_get_code(struct Nuitka_AsyncgenObject *asyncgen
+     return (PyObject *)asyncgen->m_code_object;
+ }
+ 
+-static int Nuitka_Asyncgen_set_code(struct Nuitka_AsyncgenObject *asyncgen, PyObject *value) {
++static int Nuitka_Asyncgen_set_code(struct Nuitka_AsyncgenObject *asyncgen, PyObject *value, void *closure) {
+     CHECK_OBJECT(asyncgen);
+ 
+     PyThreadState *tstate = PyThreadState_GET();
+@@ -146,7 +146,7 @@ static int Nuitka_Asyncgen_set_code(struct Nuitka_AsyncgenObject *asyncgen, PyOb
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Asyncgen_get_frame(struct Nuitka_AsyncgenObject *asyncgen) {
++static PyObject *Nuitka_Asyncgen_get_frame(struct Nuitka_AsyncgenObject *asyncgen, void *closure) {
+     CHECK_OBJECT(asyncgen);
+     CHECK_OBJECT_X(asyncgen->m_frame);
+ 
+@@ -159,7 +159,7 @@ static PyObject *Nuitka_Asyncgen_get_frame(struct Nuitka_AsyncgenObject *asyncge
+     }
+ }
+ 
+-static int Nuitka_Asyncgen_set_frame(struct Nuitka_AsyncgenObject *asyncgen, PyObject *value) {
++static int Nuitka_Asyncgen_set_frame(struct Nuitka_AsyncgenObject *asyncgen, PyObject *value, void *closure) {
+     CHECK_OBJECT(asyncgen);
+     CHECK_OBJECT_X(value);
+ 
+@@ -887,7 +887,7 @@ static PyObject *Nuitka_Asyncgen_asend(struct Nuitka_AsyncgenObject *asyncgen, P
+     return Nuitka_AsyncgenAsend_New(asyncgen, value);
+ }
+ 
+-static PyObject *Nuitka_Asyncgen_aclose(struct Nuitka_AsyncgenObject *asyncgen) {
++static PyObject *Nuitka_Asyncgen_aclose(struct Nuitka_AsyncgenObject *asyncgen, PyObject *unused_arg) {
+     CHECK_OBJECT(asyncgen);
+ 
+     PyThreadState *tstate = PyThreadState_GET();
+@@ -2061,7 +2061,7 @@ static PyObject *Nuitka_AsyncgenAthrow_tp_iternext(struct Nuitka_AsyncgenAthrowO
+     return Nuitka_AsyncgenAthrow_send(asyncgen_athrow, Py_None);
+ }
+ 
+-static PyObject *Nuitka_AsyncgenAthrow_close(struct Nuitka_AsyncgenAthrowObject *asyncgen_athrow) {
++static PyObject *Nuitka_AsyncgenAthrow_close(struct Nuitka_AsyncgenAthrowObject *asyncgen_athrow, PyObject *unused_arg) {
+     asyncgen_athrow->m_state = AWAITABLE_STATE_CLOSED;
+ 
+     Py_INCREF(Py_None);
+diff --git a/nuitka/build/static_src/CompiledCellType.c b/nuitka/build/static_src/CompiledCellType.c
+index a019cd0..e0a5e7c 100644
+--- a/nuitka/build/static_src/CompiledCellType.c
++++ b/nuitka/build/static_src/CompiledCellType.c
+@@ -163,7 +163,7 @@ static PyObject *Nuitka_Cell_get_contents(struct Nuitka_CellObject *cell, void *
+ }
+ 
+ #if PYTHON_VERSION >= 0x370
+-static int Nuitka_Cell_set_contents(struct Nuitka_CellObject *cell, PyObject *value) {
++static int Nuitka_Cell_set_contents(struct Nuitka_CellObject *cell, PyObject *value, void *closure) {
+     PyObject *old = cell->ob_ref;
+ 
+     if (old != NULL && value == NULL) {
+diff --git a/nuitka/build/static_src/CompiledCoroutineType.c b/nuitka/build/static_src/CompiledCoroutineType.c
+index 77fa5db..603b503 100644
+--- a/nuitka/build/static_src/CompiledCoroutineType.c
++++ b/nuitka/build/static_src/CompiledCoroutineType.c
+@@ -62,14 +62,14 @@ static PyObject *_Nuitka_Coroutine_send(PyThreadState *tstate, struct Nuitka_Cor
+ 
+ static long Nuitka_Coroutine_tp_hash(struct Nuitka_CoroutineObject *coroutine) { return coroutine->m_counter; }
+ 
+-static PyObject *Nuitka_Coroutine_get_name(struct Nuitka_CoroutineObject *coroutine) {
++static PyObject *Nuitka_Coroutine_get_name(struct Nuitka_CoroutineObject *coroutine, void *closure) {
+     CHECK_OBJECT(coroutine);
+ 
+     Py_INCREF(coroutine->m_name);
+     return coroutine->m_name;
+ }
+ 
+-static int Nuitka_Coroutine_set_name(struct Nuitka_CoroutineObject *coroutine, PyObject *value) {
++static int Nuitka_Coroutine_set_name(struct Nuitka_CoroutineObject *coroutine, PyObject *value, void *closure) {
+     CHECK_OBJECT(coroutine);
+     CHECK_OBJECT_X(value);
+ 
+@@ -89,14 +89,14 @@ static int Nuitka_Coroutine_set_name(struct Nuitka_CoroutineObject *coroutine, P
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Coroutine_get_qualname(struct Nuitka_CoroutineObject *coroutine) {
++static PyObject *Nuitka_Coroutine_get_qualname(struct Nuitka_CoroutineObject *coroutine, void *closure) {
+     CHECK_OBJECT(coroutine);
+ 
+     Py_INCREF(coroutine->m_qualname);
+     return coroutine->m_qualname;
+ }
+ 
+-static int Nuitka_Coroutine_set_qualname(struct Nuitka_CoroutineObject *coroutine, PyObject *value) {
++static int Nuitka_Coroutine_set_qualname(struct Nuitka_CoroutineObject *coroutine, PyObject *value, void *closure) {
+     CHECK_OBJECT(coroutine);
+     CHECK_OBJECT_X(value);
+ 
+@@ -116,7 +116,7 @@ static int Nuitka_Coroutine_set_qualname(struct Nuitka_CoroutineObject *coroutin
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Coroutine_get_cr_await(struct Nuitka_CoroutineObject *coroutine) {
++static PyObject *Nuitka_Coroutine_get_cr_await(struct Nuitka_CoroutineObject *coroutine, void *closure) {
+     CHECK_OBJECT(coroutine);
+     CHECK_OBJECT_X(coroutine->m_yield_from);
+ 
+@@ -129,7 +129,7 @@ static PyObject *Nuitka_Coroutine_get_cr_await(struct Nuitka_CoroutineObject *co
+     }
+ }
+ 
+-static PyObject *Nuitka_Coroutine_get_code(struct Nuitka_CoroutineObject *coroutine) {
++static PyObject *Nuitka_Coroutine_get_code(struct Nuitka_CoroutineObject *coroutine, void *closure) {
+     CHECK_OBJECT(coroutine);
+     CHECK_OBJECT(coroutine->m_code_object);
+ 
+@@ -137,7 +137,7 @@ static PyObject *Nuitka_Coroutine_get_code(struct Nuitka_CoroutineObject *corout
+     return (PyObject *)coroutine->m_code_object;
+ }
+ 
+-static int Nuitka_Coroutine_set_code(struct Nuitka_CoroutineObject *coroutine, PyObject *value) {
++static int Nuitka_Coroutine_set_code(struct Nuitka_CoroutineObject *coroutine, PyObject *value, void *closure) {
+     CHECK_OBJECT(coroutine);
+ 
+     PyThreadState *tstate = PyThreadState_GET();
+@@ -146,7 +146,7 @@ static int Nuitka_Coroutine_set_code(struct Nuitka_CoroutineObject *coroutine, P
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Coroutine_get_frame(struct Nuitka_CoroutineObject *coroutine) {
++static PyObject *Nuitka_Coroutine_get_frame(struct Nuitka_CoroutineObject *coroutine, void *closure) {
+     CHECK_OBJECT(coroutine);
+     CHECK_OBJECT_X(coroutine->m_frame);
+ 
+@@ -159,7 +159,7 @@ static PyObject *Nuitka_Coroutine_get_frame(struct Nuitka_CoroutineObject *corou
+     }
+ }
+ 
+-static int Nuitka_Coroutine_set_frame(struct Nuitka_CoroutineObject *coroutine, PyObject *value) {
++static int Nuitka_Coroutine_set_frame(struct Nuitka_CoroutineObject *coroutine, PyObject *value, void *closure) {
+     CHECK_OBJECT(coroutine);
+     CHECK_OBJECT_X(value);
+ 
+@@ -684,7 +684,7 @@ static bool _Nuitka_Coroutine_close(PyThreadState *tstate, struct Nuitka_Corouti
+     return true;
+ }
+ 
+-static PyObject *Nuitka_Coroutine_close(struct Nuitka_CoroutineObject *coroutine) {
++static PyObject *Nuitka_Coroutine_close(struct Nuitka_CoroutineObject *coroutine, PyObject *unused_arg) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     bool r = _Nuitka_Coroutine_close(tstate, coroutine);
+@@ -1305,10 +1305,10 @@ static PyObject *Nuitka_CoroutineWrapper_throw(struct Nuitka_CoroutineWrapperObj
+     return Nuitka_Coroutine_throw(cw->m_coroutine, args);
+ }
+ 
+-static PyObject *Nuitka_CoroutineWrapper_close(struct Nuitka_CoroutineWrapperObject *cw) {
++static PyObject *Nuitka_CoroutineWrapper_close(struct Nuitka_CoroutineWrapperObject *cw, PyObject *unused_arg) {
+     CHECK_OBJECT(cw);
+ 
+-    return Nuitka_Coroutine_close(cw->m_coroutine);
++    return Nuitka_Coroutine_close(cw->m_coroutine, NULL);
+ }
+ 
+ static PyObject *Nuitka_CoroutineWrapper_tp_repr(struct Nuitka_CoroutineWrapperObject *cw) {
+diff --git a/nuitka/build/static_src/CompiledFrameType.c b/nuitka/build/static_src/CompiledFrameType.c
+index a72833e..2505bb4 100644
+--- a/nuitka/build/static_src/CompiledFrameType.c
++++ b/nuitka/build/static_src/CompiledFrameType.c
+@@ -36,7 +36,7 @@ static PyMemberDef Nuitka_Frame_memberlist[] = {
+ 
+ #if PYTHON_VERSION < 0x300
+ 
+-static PyObject *Nuitka_Frame_get_exc_traceback(struct Nuitka_FrameObject *frame) {
++static PyObject *Nuitka_Frame_get_exc_traceback(struct Nuitka_FrameObject *frame, void *closure) {
+     assert(Nuitka_Frame_Check((PyObject *)frame));
+     CHECK_OBJECT((PyObject *)frame);
+     assert(_PyObject_GC_IS_TRACKED(frame));
+@@ -51,7 +51,7 @@ static PyObject *Nuitka_Frame_get_exc_traceback(struct Nuitka_FrameObject *frame
+     return result;
+ }
+ 
+-static int Nuitka_Frame_set_exc_traceback(struct Nuitka_FrameObject *frame, PyObject *traceback) {
++static int Nuitka_Frame_set_exc_traceback(struct Nuitka_FrameObject *frame, PyObject *traceback, void *closure) {
+     assert(Nuitka_Frame_Check((PyObject *)frame));
+     CHECK_OBJECT((PyObject *)frame);
+     assert(_PyObject_GC_IS_TRACKED(frame));
+@@ -68,7 +68,7 @@ static int Nuitka_Frame_set_exc_traceback(struct Nuitka_FrameObject *frame, PyOb
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Frame_get_exc_type(struct Nuitka_FrameObject *frame) {
++static PyObject *Nuitka_Frame_get_exc_type(struct Nuitka_FrameObject *frame, void *closure) {
+     assert(Nuitka_Frame_Check((PyObject *)frame));
+     CHECK_OBJECT((PyObject *)frame);
+     assert(_PyObject_GC_IS_TRACKED(frame));
+@@ -85,7 +85,7 @@ static PyObject *Nuitka_Frame_get_exc_type(struct Nuitka_FrameObject *frame) {
+     return result;
+ }
+ 
+-static int Nuitka_Frame_set_exc_type(struct Nuitka_FrameObject *frame, PyObject *exception_type) {
++static int Nuitka_Frame_set_exc_type(struct Nuitka_FrameObject *frame, PyObject *exception_type, void *closure) {
+     assert(Nuitka_Frame_Check((PyObject *)frame));
+     CHECK_OBJECT((PyObject *)frame);
+     assert(_PyObject_GC_IS_TRACKED(frame));
+@@ -104,7 +104,7 @@ static int Nuitka_Frame_set_exc_type(struct Nuitka_FrameObject *frame, PyObject
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Frame_get_exc_value(struct Nuitka_FrameObject *frame) {
++static PyObject *Nuitka_Frame_get_exc_value(struct Nuitka_FrameObject *frame, void *closure) {
+     assert(Nuitka_Frame_Check((PyObject *)frame));
+     CHECK_OBJECT((PyObject *)frame);
+     assert(_PyObject_GC_IS_TRACKED(frame));
+@@ -121,7 +121,7 @@ static PyObject *Nuitka_Frame_get_exc_value(struct Nuitka_FrameObject *frame) {
+     return result;
+ }
+ 
+-static int Nuitka_Frame_set_exc_value(struct Nuitka_FrameObject *frame, PyObject *exception_value) {
++static int Nuitka_Frame_set_exc_value(struct Nuitka_FrameObject *frame, PyObject *exception_value, void *closure) {
+     assert(Nuitka_Frame_Check((PyObject *)frame));
+     CHECK_OBJECT((PyObject *)frame);
+     assert(_PyObject_GC_IS_TRACKED(frame));
+@@ -539,7 +539,7 @@ static int Nuitka_Frame_tp_traverse(struct Nuitka_FrameObject *frame, visitproc
+ 
+ #if PYTHON_VERSION >= 0x340
+ 
+-static PyObject *Nuitka_Frame_clear(struct Nuitka_FrameObject *frame) {
++static PyObject *Nuitka_Frame_clear(struct Nuitka_FrameObject *frame, PyObject *unused_arg) {
+     assert(Nuitka_Frame_Check((PyObject *)frame));
+     CHECK_OBJECT((PyObject *)frame);
+     assert(_PyObject_GC_IS_TRACKED(frame));
+@@ -633,7 +633,7 @@ static inline Py_ssize_t Nuitka_Frame_GetSize(struct Nuitka_FrameObject *frame)
+ #endif
+ }
+ 
+-static PyObject *Nuitka_Frame_sizeof(struct Nuitka_FrameObject *frame) {
++static PyObject *Nuitka_Frame_sizeof(struct Nuitka_FrameObject *frame, PyObject *unused_arg) {
+     assert(Nuitka_Frame_Check((PyObject *)frame));
+     CHECK_OBJECT((PyObject *)frame);
+     assert(_PyObject_GC_IS_TRACKED(frame));
+@@ -648,6 +648,11 @@ static PyMethodDef Nuitka_Frame_methods[] = {
+     {"__sizeof__", (PyCFunction)Nuitka_Frame_sizeof, METH_NOARGS, "F.__sizeof__() -> size of F in memory, in bytes"},
+     {NULL, NULL}};
+ 
++static int Nuitka_Frame_tp_clear_slot(struct Nuitka_FrameObject *frame) {
++    Nuitka_Frame_tp_clear(frame);
++    return 0;
++}
++
+ PyTypeObject Nuitka_Frame_Type = {
+     PyVarObject_HEAD_INIT(NULL, 0) "compiled_frame",
+     sizeof(struct Nuitka_FrameObject),
+@@ -670,7 +675,7 @@ PyTypeObject Nuitka_Frame_Type = {
+     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC, // tp_flags
+     0,                                       // tp_doc
+     (traverseproc)Nuitka_Frame_tp_traverse,  // tp_traverse
+-    (inquiry)Nuitka_Frame_tp_clear,          // tp_clear
++    (inquiry)Nuitka_Frame_tp_clear_slot,     // tp_clear
+     0,                                       // tp_richcompare
+     0,                                       // tp_weaklistoffset
+     0,                                       // tp_iter
+diff --git a/nuitka/build/static_src/CompiledFunctionType.c b/nuitka/build/static_src/CompiledFunctionType.c
+index 40cf539..879d288 100644
+--- a/nuitka/build/static_src/CompiledFunctionType.c
++++ b/nuitka/build/static_src/CompiledFunctionType.c
+@@ -78,7 +78,7 @@ static long Nuitka_Function_tp_hash(struct Nuitka_FunctionObject *function) {
+     return function->m_counter;
+ }
+ 
+-static PyObject *Nuitka_Function_get_name(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_name(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -90,7 +90,7 @@ static PyObject *Nuitka_Function_get_name(struct Nuitka_FunctionObject *function
+     return result;
+ }
+ 
+-static int Nuitka_Function_set_name(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_name(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -119,7 +119,7 @@ static int Nuitka_Function_set_name(struct Nuitka_FunctionObject *function, PyOb
+ }
+ 
+ #if PYTHON_VERSION >= 0x300
+-static PyObject *Nuitka_Function_get_qualname(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_qualname(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -131,7 +131,7 @@ static PyObject *Nuitka_Function_get_qualname(struct Nuitka_FunctionObject *func
+     return result;
+ }
+ 
+-static int Nuitka_Function_set_qualname(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_qualname(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -153,7 +153,7 @@ static int Nuitka_Function_set_qualname(struct Nuitka_FunctionObject *function,
+ }
+ #endif
+ 
+-static PyObject *Nuitka_Function_get_doc(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_doc(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -170,7 +170,7 @@ static PyObject *Nuitka_Function_get_doc(struct Nuitka_FunctionObject *function)
+     return result;
+ }
+ 
+-static int Nuitka_Function_set_doc(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_doc(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -186,7 +186,7 @@ static int Nuitka_Function_set_doc(struct Nuitka_FunctionObject *function, PyObj
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Function_get_dict(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_dict(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -201,7 +201,7 @@ static PyObject *Nuitka_Function_get_dict(struct Nuitka_FunctionObject *function
+     return function->m_dict;
+ }
+ 
+-static int Nuitka_Function_set_dict(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_dict(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -231,7 +231,7 @@ static int Nuitka_Function_set_dict(struct Nuitka_FunctionObject *function, PyOb
+     }
+ }
+ 
+-static PyObject *Nuitka_Function_get_code(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_code(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -241,7 +241,7 @@ static PyObject *Nuitka_Function_get_code(struct Nuitka_FunctionObject *function
+     return result;
+ }
+ 
+-static int Nuitka_Function_set_code(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_code(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -251,7 +251,7 @@ static int Nuitka_Function_set_code(struct Nuitka_FunctionObject *function, PyOb
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Function_get_compiled(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_compiled(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -263,7 +263,7 @@ static PyObject *Nuitka_Function_get_compiled(struct Nuitka_FunctionObject *func
+     return result;
+ }
+ 
+-static int Nuitka_Function_set_compiled(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_compiled(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -273,7 +273,7 @@ static int Nuitka_Function_set_compiled(struct Nuitka_FunctionObject *function,
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Function_get_compiled_constant(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_compiled_constant(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -292,7 +292,7 @@ static PyObject *Nuitka_Function_get_compiled_constant(struct Nuitka_FunctionObj
+     return result;
+ }
+ 
+-static int Nuitka_Function_set_compiled_constant(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_compiled_constant(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -303,7 +303,7 @@ static int Nuitka_Function_set_compiled_constant(struct Nuitka_FunctionObject *f
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Function_get_closure(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_closure(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -316,7 +316,7 @@ static PyObject *Nuitka_Function_get_closure(struct Nuitka_FunctionObject *funct
+     }
+ }
+ 
+-static int Nuitka_Function_set_closure(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_closure(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -334,7 +334,7 @@ static int Nuitka_Function_set_closure(struct Nuitka_FunctionObject *function, P
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Function_get_defaults(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_defaults(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -357,7 +357,7 @@ static void _onUpdatedCompiledFunctionDefaultsValue(struct Nuitka_FunctionObject
+     }
+ }
+ 
+-static int Nuitka_Function_set_defaults(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_defaults(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -387,7 +387,7 @@ static int Nuitka_Function_set_defaults(struct Nuitka_FunctionObject *function,
+ }
+ 
+ #if PYTHON_VERSION >= 0x300
+-static PyObject *Nuitka_Function_get_kwdefaults(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_kwdefaults(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -403,7 +403,7 @@ static PyObject *Nuitka_Function_get_kwdefaults(struct Nuitka_FunctionObject *fu
+     return result;
+ }
+ 
+-static int Nuitka_Function_set_kwdefaults(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_kwdefaults(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -434,7 +434,7 @@ static int Nuitka_Function_set_kwdefaults(struct Nuitka_FunctionObject *function
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Function_get_annotations(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_annotations(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -448,7 +448,7 @@ static PyObject *Nuitka_Function_get_annotations(struct Nuitka_FunctionObject *f
+     return function->m_annotations;
+ }
+ 
+-static int Nuitka_Function_set_annotations(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_annotations(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -472,7 +472,7 @@ static int Nuitka_Function_set_annotations(struct Nuitka_FunctionObject *functio
+ 
+ #endif
+ 
+-static int Nuitka_Function_set_globals(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_globals(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -483,7 +483,7 @@ static int Nuitka_Function_set_globals(struct Nuitka_FunctionObject *function, P
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Function_get_globals(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_globals(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -496,7 +496,7 @@ static PyObject *Nuitka_Function_get_globals(struct Nuitka_FunctionObject *funct
+ }
+ 
+ #if PYTHON_VERSION >= 0x3a0
+-static int Nuitka_Function_set_builtins(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_builtins(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -507,7 +507,7 @@ static int Nuitka_Function_set_builtins(struct Nuitka_FunctionObject *function,
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Function_get_builtins(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_builtins(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -517,7 +517,7 @@ static PyObject *Nuitka_Function_get_builtins(struct Nuitka_FunctionObject *func
+ }
+ #endif
+ 
+-static int Nuitka_Function_set_module(struct Nuitka_FunctionObject *function, PyObject *value) {
++static int Nuitka_Function_set_module(struct Nuitka_FunctionObject *function, PyObject *value, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -534,7 +534,7 @@ static int Nuitka_Function_set_module(struct Nuitka_FunctionObject *function, Py
+     return DICT_SET_ITEM(function->m_dict, const_str_plain___module__, value) ? 0 : -1;
+ }
+ 
+-static PyObject *Nuitka_Function_get_module(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_get_module(struct Nuitka_FunctionObject *function, void *closure) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -601,7 +601,7 @@ static PyGetSetDef Nuitka_Function_getset[] = {
+      (setter)Nuitka_Function_set_compiled_constant, NULL},
+     {NULL}};
+ 
+-static PyObject *Nuitka_Function_reduce(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_reduce(struct Nuitka_FunctionObject *function, PyObject *unused_arg) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+@@ -618,7 +618,7 @@ static PyObject *Nuitka_Function_reduce(struct Nuitka_FunctionObject *function)
+     return result;
+ }
+ 
+-static PyObject *Nuitka_Function_clone(struct Nuitka_FunctionObject *function) {
++static PyObject *Nuitka_Function_clone(struct Nuitka_FunctionObject *function, PyObject *unused_arg) {
+     CHECK_OBJECT((PyObject *)function);
+     assert(Nuitka_Function_Check((PyObject *)function));
+     assert(_PyObject_GC_IS_TRACKED(function));
+diff --git a/nuitka/build/static_src/CompiledGeneratorType.c b/nuitka/build/static_src/CompiledGeneratorType.c
+index 493f71f..d673eb6 100644
+--- a/nuitka/build/static_src/CompiledGeneratorType.c
++++ b/nuitka/build/static_src/CompiledGeneratorType.c
+@@ -815,7 +815,7 @@ static bool _Nuitka_Generator_close(PyThreadState *tstate, struct Nuitka_Generat
+     return true;
+ }
+ 
+-static PyObject *Nuitka_Generator_close(struct Nuitka_GeneratorObject *generator) {
++static PyObject *Nuitka_Generator_close(struct Nuitka_GeneratorObject *generator, PyObject *unused_arg) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     bool r = _Nuitka_Generator_close(tstate, generator);
+@@ -1331,14 +1331,14 @@ static void Nuitka_Generator_tp_dealloc(struct Nuitka_GeneratorObject *generator
+ 
+ static long Nuitka_Generator_tp_hash(struct Nuitka_GeneratorObject *generator) { return generator->m_counter; }
+ 
+-static PyObject *Nuitka_Generator_get_name(struct Nuitka_GeneratorObject *generator) {
++static PyObject *Nuitka_Generator_get_name(struct Nuitka_GeneratorObject *generator, void *closure) {
+     PyObject *result = generator->m_name;
+     Py_INCREF(result);
+     return result;
+ }
+ 
+ #if PYTHON_VERSION >= 0x350
+-static int Nuitka_Generator_set_name(struct Nuitka_GeneratorObject *generator, PyObject *value) {
++static int Nuitka_Generator_set_name(struct Nuitka_GeneratorObject *generator, PyObject *value, void *closure) {
+     // Cannot be deleted, not be non-unicode value.
+     if (unlikely((value == NULL) || !PyUnicode_Check(value))) {
+         PyThreadState *tstate = PyThreadState_GET();
+@@ -1355,13 +1355,13 @@ static int Nuitka_Generator_set_name(struct Nuitka_GeneratorObject *generator, P
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Generator_get_qualname(struct Nuitka_GeneratorObject *generator) {
++static PyObject *Nuitka_Generator_get_qualname(struct Nuitka_GeneratorObject *generator, void *closure) {
+     PyObject *result = generator->m_qualname;
+     Py_INCREF(result);
+     return result;
+ }
+ 
+-static int Nuitka_Generator_set_qualname(struct Nuitka_GeneratorObject *generator, PyObject *value) {
++static int Nuitka_Generator_set_qualname(struct Nuitka_GeneratorObject *generator, PyObject *value, void *closure) {
+     // Cannot be deleted, not be non-unicode value.
+     if (unlikely((value == NULL) || !PyUnicode_Check(value))) {
+         PyThreadState *tstate = PyThreadState_GET();
+@@ -1378,7 +1378,7 @@ static int Nuitka_Generator_set_qualname(struct Nuitka_GeneratorObject *generato
+     return 0;
+ }
+ 
+-static PyObject *Nuitka_Generator_get_yieldfrom(struct Nuitka_GeneratorObject *generator) {
++static PyObject *Nuitka_Generator_get_yieldfrom(struct Nuitka_GeneratorObject *generator, void *closure) {
+     if (generator->m_yield_from) {
+         Py_INCREF(generator->m_yield_from);
+         return generator->m_yield_from;
+@@ -1390,20 +1390,20 @@ static PyObject *Nuitka_Generator_get_yieldfrom(struct Nuitka_GeneratorObject *g
+ 
+ #endif
+ 
+-static PyObject *Nuitka_Generator_get_code(struct Nuitka_GeneratorObject *generator) {
++static PyObject *Nuitka_Generator_get_code(struct Nuitka_GeneratorObject *generator, void *closure) {
+     PyObject *result = (PyObject *)generator->m_code_object;
+     Py_INCREF(result);
+     return result;
+ }
+ 
+-static int Nuitka_Generator_set_code(struct Nuitka_GeneratorObject *generator, PyObject *value) {
++static int Nuitka_Generator_set_code(struct Nuitka_GeneratorObject *generator, PyObject *value, void *closure) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     SET_CURRENT_EXCEPTION_TYPE0_STR(tstate, PyExc_RuntimeError, "gi_code is not writable in Nuitka");
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Generator_get_frame(struct Nuitka_GeneratorObject *generator) {
++static PyObject *Nuitka_Generator_get_frame(struct Nuitka_GeneratorObject *generator, void *closure) {
+     PyObject *result;
+ 
+     if (generator->m_frame) {
+@@ -1416,14 +1416,14 @@ static PyObject *Nuitka_Generator_get_frame(struct Nuitka_GeneratorObject *gener
+     return result;
+ }
+ 
+-static int Nuitka_Generator_set_frame(struct Nuitka_GeneratorObject *generator, PyObject *value) {
++static int Nuitka_Generator_set_frame(struct Nuitka_GeneratorObject *generator, PyObject *value, void *closure) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     SET_CURRENT_EXCEPTION_TYPE0_STR(tstate, PyExc_RuntimeError, "gi_frame is not writable in Nuitka");
+     return -1;
+ }
+ 
+-static PyObject *Nuitka_Generator_get_running(struct Nuitka_GeneratorObject *generator) {
++static PyObject *Nuitka_Generator_get_running(struct Nuitka_GeneratorObject *generator, void *closure) {
+     PyObject *result;
+ 
+ /* The type of "gi_running" changed in Python3. */
+@@ -1436,7 +1436,7 @@ static PyObject *Nuitka_Generator_get_running(struct Nuitka_GeneratorObject *gen
+     return result;
+ }
+ 
+-static int Nuitka_Generator_set_running(struct Nuitka_GeneratorObject *generator, PyObject *value) {
++static int Nuitka_Generator_set_running(struct Nuitka_GeneratorObject *generator, PyObject *value, void *closure) {
+ #if PYTHON_VERSION < 0x300
+     PyObject *exception_type = PyExc_TypeError;
+ #else
+diff --git a/nuitka/build/static_src/CompiledMethodType.c b/nuitka/build/static_src/CompiledMethodType.c
+index 3f8b6d2..1957747 100644
+--- a/nuitka/build/static_src/CompiledMethodType.c
++++ b/nuitka/build/static_src/CompiledMethodType.c
+@@ -43,7 +43,7 @@ static PyMemberDef Nuitka_Method_members[] = {
+      (char *)"the instance to which a method is bound; None for unbound method"},
+     {NULL}};
+ 
+-static PyObject *Nuitka_Method_reduce(struct Nuitka_MethodObject *method) {
++static PyObject *Nuitka_Method_reduce(struct Nuitka_MethodObject *method, PyObject *unused_arg) {
+ #if PYTHON_VERSION < 0x300
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+@@ -103,7 +103,7 @@ static PyObject *Nuitka_Method_reduce_ex(struct Nuitka_MethodObject *method, PyO
+ 
+     return result;
+ #else
+-    return Nuitka_Method_reduce(method);
++    return Nuitka_Method_reduce(method, NULL);
+ #endif
+ }
+ 
+diff --git a/nuitka/build/static_src/HelpersImportHard.c b/nuitka/build/static_src/HelpersImportHard.c
+index 4d58eb3..820e584 100644
+--- a/nuitka/build/static_src/HelpersImportHard.c
++++ b/nuitka/build/static_src/HelpersImportHard.c
+@@ -114,11 +114,16 @@ PyObject *IMPORT_HARD_CTYPES(void) {
+         module_import_hard_ctypes = PyImport_ImportModule("ctypes");
+ 
+         if (unlikely(module_import_hard_ctypes == NULL)) {
++#if defined(__wasi__)
++            // WASI CPython has no _ctypes: raise ImportError like the interpreter does
++            return NULL;
++#else
+ #ifndef __NUITKA_NO_ASSERT__
+             PyErr_PrintEx(0);
+ #endif
+             NUITKA_CANNOT_GET_HERE("failed hard import of 'ctypes'");
+             abort();
++#endif
+         }
+     }
+ 
+@@ -133,11 +138,16 @@ PyObject *IMPORT_HARD_CTYPES__MACHOLIB(void) {
+         module_import_hard_ctypes__macholib = PyImport_ImportModule("ctypes.macholib");
+ 
+         if (unlikely(module_import_hard_ctypes__macholib == NULL)) {
++#if defined(__wasi__)
++            // WASI CPython has no _ctypes: raise ImportError like the interpreter does
++            return NULL;
++#else
+ #ifndef __NUITKA_NO_ASSERT__
+             PyErr_PrintEx(0);
+ #endif
+             NUITKA_CANNOT_GET_HERE("failed hard import of 'ctypes.macholib'");
+             abort();
++#endif
+         }
+     }
+ 
+@@ -153,11 +163,16 @@ PyObject *IMPORT_HARD_CTYPES__WINTYPES(void) {
+         module_import_hard_ctypes__wintypes = PyImport_ImportModule("ctypes.wintypes");
+ 
+         if (unlikely(module_import_hard_ctypes__wintypes == NULL)) {
++#if defined(__wasi__)
++            // WASI CPython has no _ctypes: raise ImportError like the interpreter does
++            return NULL;
++#else
+ #ifndef __NUITKA_NO_ASSERT__
+             PyErr_PrintEx(0);
+ #endif
+             NUITKA_CANNOT_GET_HERE("failed hard import of 'ctypes.wintypes'");
+             abort();
++#endif
+         }
+     }
+ 
+diff --git a/nuitka/build/static_src/MetaPathBasedLoaderResourceReader.c b/nuitka/build/static_src/MetaPathBasedLoaderResourceReader.c
+index e16e129..926f68f 100644
+--- a/nuitka/build/static_src/MetaPathBasedLoaderResourceReader.c
++++ b/nuitka/build/static_src/MetaPathBasedLoaderResourceReader.c
+@@ -85,8 +85,7 @@ static PyObject *Nuitka_ResourceReader_open_resource(struct Nuitka_ResourceReade
+ 
+ #include "MetaPathBasedLoaderResourceReaderFiles.c"
+ 
+-static PyObject *Nuitka_ResourceReader_files(struct Nuitka_ResourceReaderObject *reader, PyObject *args,
+-                                             PyObject *kwds) {
++static PyObject *Nuitka_ResourceReader_files(struct Nuitka_ResourceReaderObject *reader, PyObject *args) {
+ 
+     PyThreadState *tstate = PyThreadState_GET();
+     return Nuitka_ResourceReaderFiles_New(tstate, reader->m_loader_entry, const_str_empty);
+diff --git a/nuitka/build/static_src/MetaPathBasedLoaderResourceReaderFiles.c b/nuitka/build/static_src/MetaPathBasedLoaderResourceReaderFiles.c
+index b331bfe..9100e15 100644
+--- a/nuitka/build/static_src/MetaPathBasedLoaderResourceReaderFiles.c
++++ b/nuitka/build/static_src/MetaPathBasedLoaderResourceReaderFiles.c
+@@ -97,8 +97,7 @@ static int Nuitka_ResourceReaderFiles_tp_traverse(struct Nuitka_ResourceReaderFi
+ //        Yield Traversable objects from self
+ //        """
+ //
+-static PyObject *Nuitka_ResourceReaderFiles_iterdir(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args,
+-                                                    PyObject *kwds) {
++static PyObject *Nuitka_ResourceReaderFiles_iterdir(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     PyObject *file_path = _Nuitka_ResourceReaderFiles_GetPath(tstate, files);
+@@ -145,8 +144,7 @@ static PyObject *Nuitka_ResourceReaderFiles_iterdir(struct Nuitka_ResourceReader
+ //            return strm.read()
+ //
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_read_bytes(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args,
+-                                                       PyObject *kwds) {
++static PyObject *Nuitka_ResourceReaderFiles_read_bytes(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     PyObject *file_name = _Nuitka_ResourceReaderFiles_GetPath(tstate, files);
+@@ -206,8 +204,7 @@ static PyObject *Nuitka_ResourceReaderFiles_read_text(struct Nuitka_ResourceRead
+     return result;
+ }
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_exists(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args,
+-                                                   PyObject *kwds) {
++static PyObject *Nuitka_ResourceReaderFiles_exists(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args) {
+ 
+     PyThreadState *tstate = PyThreadState_GET();
+     PyObject *file_name = _Nuitka_ResourceReaderFiles_GetPath(tstate, files);
+@@ -223,8 +220,7 @@ static PyObject *Nuitka_ResourceReaderFiles_exists(struct Nuitka_ResourceReaderF
+ //        """
+ //
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_is_dir(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args,
+-                                                   PyObject *kwds) {
++static PyObject *Nuitka_ResourceReaderFiles_is_dir(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args) {
+ 
+     PyThreadState *tstate = PyThreadState_GET();
+     PyObject *file_name = _Nuitka_ResourceReaderFiles_GetPath(tstate, files);
+@@ -238,8 +234,7 @@ static PyObject *Nuitka_ResourceReaderFiles_is_dir(struct Nuitka_ResourceReaderF
+ //        """
+ //        Return True if self is a file
+ //        """
+-static PyObject *Nuitka_ResourceReaderFiles_is_file(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args,
+-                                                    PyObject *kwds) {
++static PyObject *Nuitka_ResourceReaderFiles_is_file(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args) {
+ 
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+@@ -317,8 +312,7 @@ static PyObject *Nuitka_ResourceReaderFiles_joinpath(struct Nuitka_ResourceReade
+ //        """
+ //
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_as_posix(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args,
+-                                                     PyObject *kwds) {
++static PyObject *Nuitka_ResourceReaderFiles_as_posix(struct Nuitka_ResourceReaderFilesObject *files, PyObject *args) {
+     PyThreadState *tstate = PyThreadState_GET();
+     PyObject *path = _Nuitka_ResourceReaderFiles_GetPath(tstate, files);
+ 
+@@ -401,34 +395,34 @@ static PyObject *Nuitka_ResourceReaderFiles_open(struct Nuitka_ResourceReaderFil
+     return BUILTIN_OPEN(tstate, file_name, mode, buffering, encoding, errors, newline, NULL, NULL);
+ }
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_as_file(struct Nuitka_ResourceReaderFilesObject *files) {
++static PyObject *Nuitka_ResourceReaderFiles_as_file(struct Nuitka_ResourceReaderFilesObject *files, PyObject *unused_arg) {
+     CHECK_OBJECT(files);
+ 
+     Py_INCREF(files);
+     return (PyObject *)files;
+ }
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_enter(struct Nuitka_ResourceReaderFilesObject *files) {
++static PyObject *Nuitka_ResourceReaderFiles_enter(struct Nuitka_ResourceReaderFilesObject *files, PyObject *unused_arg) {
+     CHECK_OBJECT(files);
+ 
+     Py_INCREF(files);
+     return (PyObject *)files;
+ }
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_exit(struct Nuitka_ResourceReaderFilesObject *files) {
++static PyObject *Nuitka_ResourceReaderFiles_exit(struct Nuitka_ResourceReaderFilesObject *files, PyObject *unused_arg) {
+     CHECK_OBJECT(files);
+ 
+     Py_INCREF(Py_None);
+     return Py_None;
+ }
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_fspath(struct Nuitka_ResourceReaderFilesObject *files) {
++static PyObject *Nuitka_ResourceReaderFiles_fspath(struct Nuitka_ResourceReaderFilesObject *files, PyObject *unused_arg) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     return _Nuitka_ResourceReaderFiles_GetPath(tstate, files);
+ }
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_absolute(struct Nuitka_ResourceReaderFilesObject *files) {
++static PyObject *Nuitka_ResourceReaderFiles_absolute(struct Nuitka_ResourceReaderFilesObject *files, PyObject *unused_arg) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     PyObject *path = _Nuitka_ResourceReaderFiles_GetPath(tstate, files);
+@@ -468,7 +462,7 @@ static PyMethodDef Nuitka_ResourceReaderFiles_methods[] = {
+ //        The base name of this object without any parent references.
+ //        """
+ 
+-static PyObject *Nuitka_ResourceReaderFiles_get_name(struct Nuitka_ResourceReaderFilesObject *files) {
++static PyObject *Nuitka_ResourceReaderFiles_get_name(struct Nuitka_ResourceReaderFilesObject *files, void *closure) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     PyObject *file_name = _Nuitka_ResourceReaderFiles_GetPath(tstate, files);
+@@ -478,7 +472,7 @@ static PyObject *Nuitka_ResourceReaderFiles_get_name(struct Nuitka_ResourceReade
+     return result;
+ }
+ 
+-static int Nuitka_ResourceReaderFiles_set_name(struct Nuitka_ResourceReaderFilesObject *files, PyObject *value) {
++static int Nuitka_ResourceReaderFiles_set_name(struct Nuitka_ResourceReaderFilesObject *files, PyObject *value, void *closure) {
+     PyThreadState *tstate = PyThreadState_GET();
+ 
+     SET_CURRENT_EXCEPTION_TYPE0_STR(tstate, PyExc_AttributeError, "readonly attribute");
+diff --git a/nuitka/code_generation/templates/CodeTemplatesModules.py b/nuitka/code_generation/templates/CodeTemplatesModules.py
+index 95fe051..66402d0 100644
+--- a/nuitka/code_generation/templates/CodeTemplatesModules.py
++++ b/nuitka/code_generation/templates/CodeTemplatesModules.py
+@@ -212,7 +212,7 @@ static PyObject *_reduce_compiled_function(PyObject *self, PyObject *args, PyObj
+ }
+ 
+ static PyMethodDef _method_def_reduce_compiled_function = {"reduce_compiled_function", (PyCFunction)_reduce_compiled_function,
+-                                                           METH_VARARGS, NULL};
++                                                           METH_VARARGS | METH_KEYWORDS, NULL};
+ 
+ 
+ static PyObject *_create_compiled_function(PyObject *self, PyObject *args, PyObject *kwds) {
+@@ -255,7 +255,7 @@ static PyObject *_create_compiled_function(PyObject *self, PyObject *args, PyObj
+ static PyMethodDef _method_def_create_compiled_function = {
+     "create_compiled_function",
+     (PyCFunction)_create_compiled_function,
+-    METH_VARARGS, NULL
++    METH_VARARGS | METH_KEYWORDS, NULL
+ };
+ 
+ 
+diff --git a/nuitka/freezer/ImportDetection.py b/nuitka/freezer/ImportDetection.py
+index 1fea0a7..c48eedf 100644
+--- a/nuitka/freezer/ImportDetection.py
++++ b/nuitka/freezer/ImportDetection.py
+@@ -192,9 +192,17 @@ print("\\n".join(sorted(
+ 
+ 
+ def _detectEarlyImports():
+-    encoding_names = [
+-        m[1] for m in pkgutil.iter_modules(sys.modules["encodings"].__path__)
+-    ]
++    if os.environ.get("NUITKA_WASI_TARGET_STDLIB"):
++        encodings_dir = os.path.join(os.environ["NUITKA_WASI_TARGET_STDLIB"], "encodings")
++        encoding_names = [
++            filename[:-3]
++            for filename in os.listdir(encodings_dir)
++            if filename.endswith(".py") and filename != "__init__.py"
++        ]
++    else:
++        encoding_names = [
++            m[1] for m in pkgutil.iter_modules(sys.modules["encodings"].__path__)
++        ]
+ 
+     if os.name != "nt":
+         # On posix systems, and posix Python variants on Windows, these won't
+@@ -214,16 +222,18 @@ def _detectEarlyImports():
+         if non_locale_encoding in encoding_names:
+             encoding_names.remove(non_locale_encoding)
+ 
+-    import_code = ";".join(
++    import_lines = [
+         "import encodings.%s" % encoding_name
+         for encoding_name in sorted(encoding_names)
+-    )
++    ]
+ 
+-    import_code += ";import locale;"
++    import_lines.append("import locale")
+ 
+     # For Python3 we patch inspect without knowing if it is used.
+     if python_version >= 0x300:
+-        import_code += "import inspect;import importlib._bootstrap"
++        import_lines += ["import inspect", "import importlib._bootstrap"]
++
++    import_code = ";".join(import_lines)
+ 
+     return _detectImports(command=import_code)
+ 
+diff --git a/nuitka/freezer/Standalone.py b/nuitka/freezer/Standalone.py
+index 52b69ec..9d908a3 100644
+--- a/nuitka/freezer/Standalone.py
++++ b/nuitka/freezer/Standalone.py
+@@ -9,6 +9,7 @@ help.
+ """
+ 
+ import os
++import sys
+ 
+ from nuitka.containers.OrderedSets import OrderedSet
+ from nuitka.Errors import NuitkaForbiddenDLLEncounter
+@@ -142,6 +143,9 @@ def _detectBinaryDLLs(
+             keep_unresolved=False,
+             recursive=True,
+         )
++    elif sys.platform == "wasi":
++        # The WASI target binary is fully static, there are no DLLs to collect.
++        return OrderedSet()
+     else:
+         # Support your platform above.
+         assert False, getOS()
+diff --git a/nuitka/importing/StandardLibrary.py b/nuitka/importing/StandardLibrary.py
+index 366f4b5..c876f0f 100644
+--- a/nuitka/importing/StandardLibrary.py
++++ b/nuitka/importing/StandardLibrary.py
+@@ -31,7 +31,12 @@ def getStandardLibraryPaths():
+     # Using the function object to cache its result, avoiding global variable
+     # usage.
+     if not hasattr(getStandardLibraryPaths, "result"):
+-        os_filename = os.__file__
++        # A self-compiled (WASI) frontend has its own compiled "os" module, so
++        # the target standard library is given explicitly.
++        if os.environ.get("NUITKA_WASI_TARGET_STDLIB"):
++            os_filename = os.path.join(os.environ["NUITKA_WASI_TARGET_STDLIB"], "os.py")
++        else:
++            os_filename = os.__file__
+         if os_filename.endswith(".pyc"):
+             os_filename = os_filename[:-1]
+ 
+diff --git a/nuitka/nodes/ClassNodes.py b/nuitka/nodes/ClassNodes.py
+index 70eb691..9f0e826 100644
+--- a/nuitka/nodes/ClassNodes.py
++++ b/nuitka/nodes/ClassNodes.py
+@@ -9,6 +9,8 @@ The classes are are at the core of the language and have their complexities.
+ 
+ from nuitka.PythonVersions import python_version
+ 
++import sys
++
+ from .ChildrenHavingMixins import (
+     ChildrenExpressionBuiltinType3Mixin,
+     ChildrenHavingMetaclassBasesMixin,
+@@ -217,6 +219,23 @@ class ExpressionBuiltinType3(ChildrenExpressionBuiltinType3Mixin, ExpressionBase
+         # TODO: Want to cache this result probably for speed reasons and it may also
+         # contain allocations for dataclasses, generics, etc.
+ 
++        bases = self.subnode_bases.getCompileTimeConstant()
++
++        if sys.platform == "wasi":
++            # No ctypes there; same algorithm as CPython's _PyType_CalculateMetaclass.
++            winner = type
++            for base in bases:
++                base_type = type(base)
++                if issubclass(winner, base_type):
++                    continue
++                if issubclass(base_type, winner):
++                    winner = base_type
++                    continue
++                raise TypeError(
++                    "metaclass conflict: the metaclass of a derived class must be a (non-strict) subclass of the metaclasses of all its bases"
++                )
++            return winner
++
+         # Need to use private CPython API unless we want to re-implement it, pylint: disable=protected-access
+         import ctypes
+ 
+diff --git a/nuitka/nodes/ImportNodes.py b/nuitka/nodes/ImportNodes.py
+index 0418aa7..2b59012 100644
+--- a/nuitka/nodes/ImportNodes.py
++++ b/nuitka/nodes/ImportNodes.py
+@@ -375,10 +375,16 @@ class ExpressionImportModuleHard(
+         if self.finding != "not-found" and isHardModuleWithoutSideEffect(
+             self.module_name
+         ):
+-            __import__(self.module_name.asString())
+-            self.module = sys.modules[self.value_name]
++            try:
++                __import__(self.module_name.asString())
++            except ImportError:
++                # Frontend host lacks it (e.g. ctypes on WASI), no compile time knowledge then.
++                self.module = None
++                self.is_package = None
++            else:
++                self.module = sys.modules[self.value_name]
+ 
+-            self.is_package = hasattr(self.module, "__path__")
++                self.is_package = hasattr(self.module, "__path__")
+         else:
+             self.module = None
+             self.is_package = None
+diff --git a/nuitka/nodes/shapes/BuiltinTypeShapes.py b/nuitka/nodes/shapes/BuiltinTypeShapes.py
+index db42ce4..840da40 100644
+--- a/nuitka/nodes/shapes/BuiltinTypeShapes.py
++++ b/nuitka/nodes/shapes/BuiltinTypeShapes.py
+@@ -1799,7 +1799,7 @@ tshape_function = ShapeTypeFunction()
+ class ShapeTypeBuiltinModule(ShapeTypeModule):
+     __slots__ = ()
+ 
+-    typical_value = __import__("_ctypes")
++    typical_value = __import__("_imp")  # any built-in module; _ctypes is absent on WASI
+ 
+ 
+ tshape_module_builtin = ShapeTypeBuiltinModule()
+diff --git a/nuitka/utils/Execution.py b/nuitka/utils/Execution.py
+index 22980f3..e53fc8a 100644
+--- a/nuitka/utils/Execution.py
++++ b/nuitka/utils/Execution.py
+@@ -9,6 +9,7 @@ binaries (needed for exec) and run them capturing outputs.
+ 
+ 
+ import os
++import sys
+ from contextlib import contextmanager
+ 
+ from nuitka.__past__ import subprocess
+@@ -417,9 +418,61 @@ def createProcess(
+     return process
+ 
+ 
++def _executeWasiPythonProbe(command, stdin):
++    """WASI has no processes; replay target-Python probes recorded ahead of time.
++
++    Probes are keyed by the exact argument vector and stdin. Missing entries are
++    a hard error; "tools/wasi-probe-cache.py" records them with the very same
++    "python.wasm" runtime and file system layout.
++    """
++    import hashlib
++    import json
++
++    if stdin is True or stdin is False:
++        stdin = b""
++    if type(stdin) is not bytes:
++        stdin = stdin.encode("utf8")
++
++    if command[0] in ("", sys.executable):
++        command = ["<python>"] + list(command[1:])
++    command = list(command)
++
++    key = hashlib.sha256(
++        json.dumps([command, stdin.decode("utf8")]).encode("utf8")
++    ).hexdigest()
++
++    cache_filename = os.environ.get("NUITKA_WASI_PROBE_CACHE", "")
++    cache = {}
++    if cache_filename and os.path.exists(cache_filename):
++        with open(cache_filename) as cache_file:
++            cache = json.load(cache_file)
++
++    if key not in cache:
++        pending_filename = cache_filename + ".pending.json"
++        with open(pending_filename, "w") as pending_file:
++            json.dump(
++                {"key": key, "args": command, "stdin": stdin.decode("utf8")},
++                pending_file,
++            )
++        sys.exit(
++            "Nuitka-WASI: no recorded result for target Python probe %s, request written to %r"
++            % (key, pending_filename)
++        )
++
++    entry = cache[key]
++    return (
++        entry["stdout"].encode("utf8"),
++        entry["stderr"].encode("utf8"),
++        entry["exit_code"],
++    )
++
++
+ def executeProcess(
+     command, env=None, stdin=False, shell=False, external_cwd=False, timeout=None
+ ):
++    if sys.platform == "wasi":
++        return _executeWasiPythonProbe(command, stdin)
++
+     process = createProcess(
+         command=command, env=env, stdin=stdin, shell=shell, external_cwd=external_cwd
+     )
+diff --git a/nuitka/utils/MemoryUsage.py b/nuitka/utils/MemoryUsage.py
+index 369f81e..60059bf 100644
+--- a/nuitka/utils/MemoryUsage.py
++++ b/nuitka/utils/MemoryUsage.py
+@@ -5,6 +5,8 @@
+ 
+ """
+ 
++import sys
++
+ from nuitka.containers.OrderedDicts import OrderedDict
+ from nuitka.Tracing import memory_logger, printLine
+ 
+@@ -54,6 +56,9 @@ def getOwnProcessMemoryUsage():
+             raise ctypes.WinError()
+ 
+         return counters.PrivateUsage
++    elif sys.platform == "wasi":
++        # No getrusage on WASI; the browser host measures memory instead.
++        return 0
+     else:
+         import resource  # Posix only code, pylint: disable=I0021,import-error
+ 
+diff --git a/nuitka/utils/Utils.py b/nuitka/utils/Utils.py
+index 5bfdf28..871ccc0 100644
+--- a/nuitka/utils/Utils.py
++++ b/nuitka/utils/Utils.py
+@@ -7,7 +7,10 @@ Here the small things that fit nowhere else and don't deserve their own module.
+ 
+ """
+ 
+-import ctypes
++try:
++    import ctypes
++except ImportError:  # WASI CPython has no _ctypes
++    ctypes = None
+ import functools
+ import os
+ import sys
+diff --git a/nuitka/utils/WindowsResources.py b/nuitka/utils/WindowsResources.py
+index bfc8cd8..93f5a3f 100644
+--- a/nuitka/utils/WindowsResources.py
++++ b/nuitka/utils/WindowsResources.py
+@@ -15,7 +15,10 @@ multiple resources proved to be not possible.
+ 
+ """
+ 
+-import ctypes
++try:
++    import ctypes
++except ImportError:  # WASI CPython has no _ctypes
++    ctypes = None
+ import os
+ import struct
+ 
+@@ -362,22 +365,23 @@ def getDefaultWindowsExecutableManifest():
+     return WindowsExecutableManifest(template)
+ 
+ 
+-class VsFixedFileInfoStructure(ctypes.Structure):
+-    _fields_ = [
+-        ("dwSignature", ctypes.c_uint32),  # 0xFEEF04BD
+-        ("dwStructVersion", ctypes.c_uint32),
+-        ("dwFileVersionMS", ctypes.c_uint32),
+-        ("dwFileVersionLS", ctypes.c_uint32),
+-        ("dwProductVersionMS", ctypes.c_uint32),
+-        ("dwProductVersionLS", ctypes.c_uint32),
+-        ("dwFileFlagsMask", ctypes.c_uint32),
+-        ("dwFileFlags", ctypes.c_uint32),
+-        ("dwFileOS", ctypes.c_uint32),
+-        ("dwFileType", ctypes.c_uint32),
+-        ("dwFileSubtype", ctypes.c_uint32),
+-        ("dwFileDateMS", ctypes.c_uint32),
+-        ("dwFileDateLS", ctypes.c_uint32),
+-    ]
++if ctypes is not None:
++    class VsFixedFileInfoStructure(ctypes.Structure):
++        _fields_ = [
++            ("dwSignature", ctypes.c_uint32),  # 0xFEEF04BD
++            ("dwStructVersion", ctypes.c_uint32),
++            ("dwFileVersionMS", ctypes.c_uint32),
++            ("dwFileVersionLS", ctypes.c_uint32),
++            ("dwProductVersionMS", ctypes.c_uint32),
++            ("dwProductVersionLS", ctypes.c_uint32),
++            ("dwFileFlagsMask", ctypes.c_uint32),
++            ("dwFileFlags", ctypes.c_uint32),
++            ("dwFileOS", ctypes.c_uint32),
++            ("dwFileType", ctypes.c_uint32),
++            ("dwFileSubtype", ctypes.c_uint32),
++            ("dwFileDateMS", ctypes.c_uint32),
++            ("dwFileDateLS", ctypes.c_uint32),
++        ]
+ 
+ 
+ def convertStructureToBytes(c_value):
+@@ -418,12 +422,13 @@ def _getVersionString(value):
+     return value.encode("utf-16le")
+ 
+ 
+-class VersionResourceHeader(ctypes.Structure):
+-    _fields_ = [
+-        ("full_length", ctypes.c_short),
+-        ("item_size", ctypes.c_short),
+-        ("type", ctypes.c_short),
+-    ]
++if ctypes is not None:
++    class VersionResourceHeader(ctypes.Structure):
++        _fields_ = [
++            ("full_length", ctypes.c_short),
++            ("item_size", ctypes.c_short),
++            ("type", ctypes.c_short),
++        ]
+ 
+ 
+ def _makeVersionStringEntry(key, value):
+@@ -641,3 +646,7 @@ def addVersionInfoResource(
+ #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ #     See the License for the specific language governing permissions and
+ #     limitations under the License.
++
++
++if ctypes is None:
++    VsFixedFileInfoStructure = VersionResourceHeader = None

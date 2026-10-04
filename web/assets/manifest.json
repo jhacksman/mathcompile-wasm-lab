@@ -1,0 +1,14 @@
+{
+  "python.wasm": {
+    "bytes": 19917834,
+    "sha256": "30b323e8579d75983c9f44a214ea0cad15521636abfd1ec1f8d16a4c9c815e05"
+  },
+  "frontend.tar": {
+    "bytes": 99809280,
+    "sha256": "d62f22f763b6199daff4c16b7afd3461524aa8beb356c2acde9fc75b44941e7c"
+  },
+  "runtime.tar": {
+    "bytes": 67102720,
+    "sha256": "f29ad832e922d9313a2d3d3a8d33398a2bdc959927ea9d9fe079c8dee4cd8cc1"
+  }
+}

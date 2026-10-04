@@ -1,0 +1,6 @@
+python_basics.py exit 0 setup {"coreMs":936.2050000000745,"packagesMs":574.0099999997765,"version":"0.25.1"} runs 113
+sympy_algebra.py exit 0 setup {"coreMs":934.4549999991432,"packagesMs":625.2400000002235,"version":"0.25.1"} runs 4595
+sympy_calculus.py exit 0 setup {"coreMs":949.910000000149,"packagesMs":311.2649999996647,"version":"0.25.1"} runs 3037
+sympy_matrix_assume.py exit 0 setup {"coreMs":1854.019999999553,"packagesMs":373.95000000018626,"version":"0.25.1"} runs 2298
+errors.py exit 1 setup {"coreMs":932.3349999999627,"packagesMs":312.12000000011176,"version":"0.25.1"} runs 1851
+recursion_limit.py exit 0 setup {"coreMs":1902.355000000447,"packagesMs":381.1399999996647,"version":"0.25.1"} runs 7

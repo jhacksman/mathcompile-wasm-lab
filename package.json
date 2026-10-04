@@ -1,0 +1,31 @@
+{
+  "name": "mathcompile-wasm-lab",
+  "scripts": {
+    "setup:host": "bash scripts/host/build-all.sh",
+    "setup:assets": "python3 scripts/build-assets.py",
+    "setup:vendor": "sh scripts/vendor.sh",
+    "setup:pyodide": "sh scripts/fetch-pyodide.sh",
+    "serve": "node scripts/serve.mjs",
+    "lint": "node scripts/lint.mjs",
+    "test:node": "node --max-old-space-size=8192 tests/node-e2e.mjs tests/cases/python_basics.py",
+    "test:c": "node tests/browser-c.mjs --out results/milestoneB.json",
+    "test:browser": "node tests/browser-e2e.mjs tests/cases/python_basics.py tests/cases/sympy_algebra.py tests/cases/sympy_calculus.py tests/cases/sympy_matrix_assume.py tests/cases/errors.py tests/cases/recursion_limit.py --offline --out results/lab-correctness.json",
+    "test:pyodide": "node tests/pyodide-run.mjs results/pyodide-correctness.json tests/cases/python_basics.py tests/cases/sympy_algebra.py tests/cases/sympy_calculus.py tests/cases/sympy_matrix_assume.py tests/cases/errors.py tests/cases/recursion_limit.py",
+    "test:compare": "node tests/compare.mjs results/lab-correctness.json results/pyodide-correctness.json results/correctness-comparison.json",
+    "test:offline": "sh tests/offline-proof.sh",
+    "bench": "sh bench/run.sh",
+    "test:limits": "node tests/browser-limits.mjs --out results/limits.json",
+    "test:selfc": "sh tests/selfc-proof.sh"
+  },
+  "license": "Apache-2.0",
+  "description": "Research prototype: Python/SymPy -> Nuitka (py2wasm) frontend in browser CPython-WASI -> C -> browser clang/lld -> Wasm, all in the browser",
+  "dependencies": {
+    "@bjorn3/browser_wasi_shim": "0.4.2",
+    "@yowasp/clang": "21.1.4-3"
+  },
+  "devDependencies": {
+    "playwright-core": "1.53.0"
+  },
+  "private": true,
+  "type": "module"
+}

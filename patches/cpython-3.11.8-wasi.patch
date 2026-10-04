@@ -1,0 +1,29 @@
+diff --git a/Python/thread_pthread.h b/Python/thread_pthread.h
+index ddc28c4..2a49d5a 100644
+--- a/Python/thread_pthread.h
++++ b/Python/thread_pthread.h
+@@ -363,7 +363,12 @@ PyThread_exit_thread(void)
+     dprintf(("PyThread_exit_thread called\n"));
+     if (!initialized)
+         exit(0);
++#if defined(__wasi__)
++    /* wasi-libc does not declare pthread_exit. */
++    abort();
++#else
+     pthread_exit(0);
++#endif
+ }
+ 
+ #ifdef USE_SEMAPHORES
+@@ -907,7 +912,11 @@ PyThread_tss_delete(Py_tss_t *key)
+         return;
+     }
+ 
++#ifndef __wasi__
++    /* wasi-libc's single-threaded pthread_key_delete walks an uninitialised
++       thread list and never terminates. */
+     pthread_key_delete(key->_key);
++#endif
+     /* pthread has not provided the defined invalid value for the key. */
+     key->_is_initialized = 0;
+ }

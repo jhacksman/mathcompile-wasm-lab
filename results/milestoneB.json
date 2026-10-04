@@ -1,0 +1,135 @@
+{
+ "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/137.0.0.0 Safari/537.36",
+ "nonce": 578825926,
+ "offline": true,
+ "offlineAt": 1791008961197,
+ "serverRequestsAfterOffline": [],
+ "programs": [
+  {
+   "name": "c-v1",
+   "source": "#include <stdio.h>\n#include <stdint.h>\nstatic uint64_t powmod(uint64_t b, uint64_t e, uint64_t m) { uint64_t r = 1; b %= m; while (e) { if (e & 1) r = r * b % m; b = b * b % m; e >>= 1; } return r; }\nint main(void) { printf(\"v1 powmod(3,%d,1000003)=%llu\\n\", 578825926, (unsigned long long)powmod(3, 578825926, 1000003)); return 0; }\n",
+   "expected": "v1 powmod(3,578825926,1000003)=120039\n",
+   "pass": true,
+   "compileMs": 457.8800000026822,
+   "sourceHash": "8e539435964be7cb42f0e07321fc7f97a9ba2cc7cf59ca0a923e2d02440f18ba",
+   "objectHash": "bb28083b24365660e7628c4cf2c17e743eb941f8c858419daa067e9eb98ff935",
+   "wasmHash": "9da905003c3dcaccc3dc3bdcefe00478d7376dc326955afb7d6e7c6fb30666f5",
+   "wasmBytes": 17685,
+   "steps": [
+    {
+     "kind": "compile",
+     "argv": [
+      "clang",
+      "--target=wasm32-wasip1",
+      "-O2",
+      "-Wall",
+      "-c",
+      "/work/c/main.c",
+      "-o",
+      "/work/c/main.o"
+     ],
+     "ms": 402.625,
+     "code": 0,
+     "stderr": ""
+    },
+    {
+     "kind": "link",
+     "argv": [
+      "clang",
+      "--target=wasm32-wasip1",
+      "/work/c/main.o",
+      "-o",
+      "/work/c/main.wasm",
+      "-Wl,-z,stack-size=8388608",
+      "-Wl,--stack-first",
+      "-Wl,--max-memory=2147483648"
+     ],
+     "ms": 54.01000000163913,
+     "code": 0,
+     "stderr": ""
+    }
+   ],
+   "workerNet": [],
+   "imports": [
+    "wasi_snapshot_preview1.fd_close",
+    "wasi_snapshot_preview1.fd_fdstat_get",
+    "wasi_snapshot_preview1.fd_seek",
+    "wasi_snapshot_preview1.fd_write",
+    "wasi_snapshot_preview1.proc_exit"
+   ],
+   "run": {
+    "ms": 1.1900000013411045,
+    "instantiateMs": 0.04999999701976776,
+    "memoryBytes": 8454144,
+    "code": 0,
+    "trap": null,
+    "truncated": false,
+    "stdout": "v1 powmod(3,578825926,1000003)=120039\n",
+    "stderr": ""
+   }
+  },
+  {
+   "name": "c-v2-edited",
+   "source": "#include <stdio.h>\n#include <stdint.h>\nstatic uint64_t powmod(uint64_t b, uint64_t e, uint64_t m) { uint64_t r = 1; b %= m; while (e) { if (e & 1) r = r * b % m; b = b * b % m; e >>= 1; } return r; }\nstatic unsigned collatz(uint64_t n) { unsigned s = 0; while (n != 1) { n = n & 1 ? 3 * n + 1 : n / 2; s++; } return s; }\nint main(void) { printf(\"v2 powmod(7,%d,998244353)=%llu collatz=%u\\n\", 578825926, (unsigned long long)powmod(7, 578825926, 998244353), collatz(578825926)); return 3; }\n",
+   "expected": "v2 powmod(7,578825926,998244353)=150418810 collatz=143\n",
+   "pass": true,
+   "compileMs": 136.660000000149,
+   "sourceHash": "d747b2148959950729049fc7f32245f11150a4281def64ffb4f27eea1415a0ac",
+   "objectHash": "3d2c23d2632a1fb2f89893830177be0294e2b4e0442a2f4454b6e14da129d37b",
+   "wasmHash": "dec145ccbab788f2c0627da94718f80122474022f8067a72175dbbf30dc2d9ae",
+   "wasmBytes": 17764,
+   "steps": [
+    {
+     "kind": "compile",
+     "argv": [
+      "clang",
+      "--target=wasm32-wasip1",
+      "-O2",
+      "-Wall",
+      "-c",
+      "/work/c/main.c",
+      "-o",
+      "/work/c/main.o"
+     ],
+     "ms": 95.26500000059605,
+     "code": 0,
+     "stderr": ""
+    },
+    {
+     "kind": "link",
+     "argv": [
+      "clang",
+      "--target=wasm32-wasip1",
+      "/work/c/main.o",
+      "-o",
+      "/work/c/main.wasm",
+      "-Wl,-z,stack-size=8388608",
+      "-Wl,--stack-first",
+      "-Wl,--max-memory=2147483648"
+     ],
+     "ms": 40.605000000447035,
+     "code": 0,
+     "stderr": ""
+    }
+   ],
+   "workerNet": [],
+   "imports": [
+    "wasi_snapshot_preview1.fd_close",
+    "wasi_snapshot_preview1.fd_fdstat_get",
+    "wasi_snapshot_preview1.fd_seek",
+    "wasi_snapshot_preview1.fd_write",
+    "wasi_snapshot_preview1.proc_exit"
+   ],
+   "run": {
+    "ms": 1.3799999989569187,
+    "instantiateMs": 0.054999999701976776,
+    "memoryBytes": 8454144,
+    "code": 3,
+    "trap": null,
+    "truncated": false,
+    "stdout": "v2 powmod(7,578825926,998244353)=150418810 collatz=143\n",
+    "stderr": ""
+   }
+  }
+ ]
+}

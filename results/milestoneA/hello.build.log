@@ -1,0 +1,19 @@
+py2wasm: Using wasi-sdk from /home/ubuntu/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/wasi-sdk/21/sdk-Linux
+Nuitka-Options: Used command line options: hello.py --standalone --static-libpython=yes --disable-ccache --lto=yes --output-dir=/home/ubuntu/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/__py2wasm --output-filename=output.wasm --remove-output
+Nuitka: Starting Python compilation with Nuitka '2.6.3' on Python '3.11' commercial grade 'not installed'.
+Nuitka-Plugins:anti-bloat: Not including '_json' automatically in order to avoid bloat, but this may cause: may slow down by using fallback implementation.
+Nuitka-Plugins:anti-bloat: Not including '_bisect' automatically in order to avoid bloat, but this may cause: may slow down by using fallback implementation.
+Nuitka: Completed Python level compilation and optimization.
+Nuitka: Generating source code for C backend compiler.
+Nuitka: Running data composer tool for optimal constant value handling.
+Nuitka: Running C compilation via Scons.
+Nuitka-Scons: Backend C compiler: ~/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/wasi-sdk/21/sdk-Linux/bin/clang (clang 17.0.6).
+Nuitka-Scons: Backend linking program with 7 files (no progress information available for this stage).
+wasm-ld: warning: unknown -z value: noexecstack
+Nuitka: Removing build directory '/home/ubuntu/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/__py2wasm/hello.build'.
+Nuitka: Successfully created '/home/ubuntu/work/venv-py2wasm/lib/python3.11/site-packages/nuitka/__py2wasm/hello.dist/output.wasm'.
+py2wasm: File created successfully: hello.wasm
+
+real	1m4.531s
+user	1m11.867s
+sys	0m1.439s

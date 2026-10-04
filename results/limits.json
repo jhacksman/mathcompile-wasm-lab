@@ -1,0 +1,57 @@
+{
+ "date": "2026-10-03T04:18:07.371Z",
+ "browser": "137.0.7118.2",
+ "failures": 0,
+ "checks": [
+  {
+   "name": "cancel during compile",
+   "ok": true,
+   "detail": "compile failed: cancelled by user"
+  },
+  {
+   "name": "compile after cancel (restarted compiler worker)",
+   "ok": true,
+   "detail": "compiled in 151.4 s, 24.9 MB Wasm"
+  },
+  {
+   "name": "link argv carries memory cap",
+   "ok": true,
+   "detail": "-Wl,-z,stack-size=8388608 -Wl,--stack-first -Wl,--max-memory=268435456"
+  },
+  {
+   "name": "run 1: MemoryError caught under cap",
+   "ok": true,
+   "detail": "memory: MemoryError caught after 224 MiB; recovered: 499999500000"
+  },
+  {
+   "name": "run 1: stdout bounded to 64 KiB",
+   "ok": true,
+   "detail": "65536 bytes"
+  },
+  {
+   "name": "run 1: endless loop killed by timeout",
+   "ok": true,
+   "detail": "killed after 30 s timeout after 30180 ms"
+  },
+  {
+   "name": "run 2: MemoryError caught under cap",
+   "ok": true,
+   "detail": "memory: MemoryError caught after 224 MiB; recovered: 499999500000"
+  },
+  {
+   "name": "run 2: stdout bounded to 64 KiB",
+   "ok": true,
+   "detail": "65536 bytes"
+  },
+  {
+   "name": "run 2: endless loop killed by timeout",
+   "ok": true,
+   "detail": "killed after 30 s timeout after 30115 ms"
+  },
+  {
+   "name": "UI responsive after kill",
+   "ok": true,
+   "detail": "run button enabled"
+  }
+ ]
+}

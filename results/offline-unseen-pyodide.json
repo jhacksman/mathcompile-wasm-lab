@@ -1,0 +1,24 @@
+{
+ "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/137.0.0.0 Safari/537.36",
+ "runtime": "pyodide-0.25.1",
+ "results": [
+  {
+   "file": "offline-unseen-source.py",
+   "type": "done",
+   "setup": {
+    "coreMs": 1078.280000001192,
+    "packagesMs": 388.0100000016391,
+    "version": "0.25.1"
+   },
+   "runs": [
+    {
+     "ms": 2413.140000000596,
+     "code": 0,
+     "stdout": "caught KeyError('k328284166')\nnonce 328284166 seq = 2646816224234530251479 pow = 885820805\nx*(x - 7)*(x + 35)\n[35/2 - 3*sqrt(133)/2, 3*sqrt(133)/2 + 35/2]\n3 3 True\n2401/6\n2*x*(x**2*cos(2*x) + 3*x*sin(2*x) + 3*sin(x)**2)\n",
+     "stderr": ""
+    }
+   ],
+   "wallMs": 3893.310000002384
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+<!doctype html><meta charset="utf-8"><title>Pyodide baseline</title>
+<p>Pyodide baseline runner (driven by tests/pyodide-run.mjs). window.runPyodide(source, {repeat, clearCache, fresh}).</p>
+<script type="module">
+let w = null;
+window.runPyodide = (source, opts = {}) => new Promise((resolve, reject) => {
+  if (!w || opts.fresh) { w?.terminate(); w = new Worker('pyodide-worker.mjs', { type: 'module' }); }
+  const t0 = performance.now();
+  w.onmessage = ({ data }) => data.type === 'done' ? resolve({ ...data, wallMs: performance.now() - t0 }) : reject(new Error(data.message));
+  w.onerror = e => reject(new Error(e.message));
+  w.postMessage({ source, repeat: opts.repeat || 1, clearCache: opts.clearCache !== false });
+});
+</script>
