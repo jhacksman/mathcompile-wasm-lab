@@ -13,7 +13,7 @@ Quick start (Linux x86-64, Node 20+, Python 3, curl, a C toolchain; ~300 MB down
 
     npm ci
     npm run setup:host && npm run setup:vendor && npm run setup:assets && npm run setup:pyodide
-    npm run serve            # http://localhost:8643 (sends the required COOP/COEP headers)
+    npm run serve            # http://localhost:8642 (sends the required COOP/COEP headers)
 
 Tests: `npm run lint`, `npm run test:node`, `npm run test:c`, `npm run test:browser`, `npm run test:pyodide`,
 `npm run test:compare`, `npm run test:offline`, `npm run test:limits`, `npm run test:selfc` (Milestone E; needs
