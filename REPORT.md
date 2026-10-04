@@ -40,7 +40,7 @@ speed, not compiled speed (see benchmarks). "Full compile" (also compiling SymPy
     npm run setup:vendor     # copy pinned npm browser packages to web/vendor
     npm run setup:assets     # build web/assets/{python.wasm,frontend.tar,runtime.tar,...} + SHA256 manifest
     npm run setup:pyodide    # Pyodide 0.25.1 baseline, verified against locks/pyodide.sha256
-    npm run serve            # http://localhost:8643  (COOP same-origin, COEP require-corp, strict CSP)
+    npm run serve            # http://localhost:8642  (COOP same-origin, COEP require-corp, strict CSP)
 
 Open the page, press "prefetch", type Python, "compile", "run". Tests (Chrome via CDP on :29229, or
 `CHROME=/path/to/chrome` for a private headless instance):
